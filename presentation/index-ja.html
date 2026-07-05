@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Senpai AI — Company Brain for Manufacturing</title>
+  <title>Senpai AI — 製造業のCompany Brain</title>
   <style>
     :root {
-      --bg: #0e1116;
-      --bg-2: #151a22;
-      --panel: #1b222c;
-      --line: #2b3543;
-      --ink: #e8edf4;
-      --ink-dim: #9aa7b8;
-      --ink-faint: #62707f;
-      --red: #ff5c5c;
-      --teal: #38d6c6;
-      --purple: #a98bff;
-      --green: #4fd67f;
-      --amber: #ffc46b;
+      --bg: #f7fbff;
+      --bg-2: #eef6fc;
+      --panel: rgba(255, 255, 255, 0.88);
+      --line: #c8d9e8;
+      --ink: #182536;
+      --ink-dim: #4f6174;
+      --ink-faint: #7f91a5;
+      --red: #c93442;
+      --teal: #087f8c;
+      --purple: #6656b8;
+      --green: #24784f;
+      --amber: #a76704;
       --mono: ui-monospace, "SF Mono", "SFMono-Regular", "Menlo", monospace;
       --sans: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
     }
@@ -34,16 +34,25 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* subtle CAD grid backdrop */
+    /* drafting-paper backdrop */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(var(--line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--line) 1px, transparent 1px);
-      background-size: 44px 44px;
-      opacity: 0.10;
+        linear-gradient(rgba(8,127,140,0.16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8,127,140,0.16) 1px, transparent 1px),
+        linear-gradient(rgba(8,127,140,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8,127,140,0.07) 1px, transparent 1px);
+      background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 4vh 5vw;
+      border: 1px solid rgba(8,127,140,0.2);
       pointer-events: none;
       z-index: 0;
     }
@@ -89,7 +98,7 @@
     .green { color: var(--green); }
     .purple { color: var(--purple); }
     .amber { color: var(--amber); }
-    strong { color: #fff; font-weight: 700; }
+    strong { color: var(--ink); font-weight: 700; }
 
     /* ---- slide 1 title ---- */
     .title-slide { align-items: center; text-align: center; }
@@ -152,18 +161,18 @@
     }
     .story-card {
       position: relative; min-width: 0; min-height: 188px;
-      border: 1px solid var(--line); border-radius: 10px; background: rgba(27,34,44,0.78);
+      border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,0.92);
       padding: 0.85rem; display: flex; flex-direction: column; justify-content: space-between;
     }
     .story-card.learned { border-color: rgba(79,214,127,0.58); box-shadow: inset 0 0 0 1px rgba(79,214,127,0.1); }
     .story-card.fail { border-color: rgba(255,92,92,0.72); box-shadow: inset 0 0 0 1px rgba(255,92,92,0.18), 0 0 34px rgba(255,92,92,0.08); }
-    .story-card.split { background: linear-gradient(180deg, rgba(27,34,44,0.82), rgba(21,26,34,0.82)); }
+    .story-card.split { background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(238,246,252,0.88)); }
     .story-year { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; }
     .story-signal { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
     .story-signal.good { color: var(--green); }
     .story-signal.bad { color: var(--red); }
     .story-signal.warn { color: var(--amber); }
-    .story-big { font-size: clamp(1.05rem, 2.2vw, 1.65rem); line-height: 1.05; font-weight: 800; color: #fff; margin: 0.35rem 0; }
+    .story-big { font-size: clamp(1.05rem, 2.2vw, 1.65rem); line-height: 1.05; font-weight: 800; color: var(--ink); margin: 0.35rem 0; }
     .story-big.red { color: var(--red); }
     .story-big.green { color: var(--green); }
     .story-mini {
@@ -187,7 +196,7 @@
     .reason-chip {
       border: 1px solid var(--line); border-radius: 6px; padding: 0.24rem 0.16rem;
       color: var(--ink-dim); font-family: var(--mono); font-size: 0.5rem; line-height: 1.1; text-align: center;
-      background: rgba(14,17,22,0.34);
+      background: rgba(247,251,255,0.82);
     }
     .reason-chip.hot { border-color: rgba(255,92,92,0.7); color: var(--red); }
     .reason-chip.good { border-color: rgba(79,214,127,0.58); color: var(--green); }
@@ -197,7 +206,7 @@
     }
     .reason-map {
       position: relative; border: 1px solid var(--line); border-radius: 10px;
-      background: linear-gradient(180deg, rgba(27,34,44,0.72), rgba(21,26,34,0.72));
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(238,246,252,0.88));
       padding: 1rem; overflow: hidden;
     }
     .reason-map::before {
@@ -244,8 +253,8 @@
     /* ---- senpai card (slide 4) ---- */
     .senpai-card {
       background: var(--panel); border: 1px solid var(--red);
-      border-radius: 12px; padding: 1.4rem 1.5rem;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 4px rgba(255,92,92,0.08);
+      border-radius: 8px; padding: 1.4rem 1.5rem;
+      box-shadow: 0 16px 34px rgba(37,58,78,0.12), 0 0 0 4px rgba(255,92,92,0.08);
       max-width: 34ch;
     }
     .senpai-card .hd { display: flex; align-items: center; gap: 0.6rem; font-family: var(--mono); color: var(--red); font-size: 0.85rem; letter-spacing: 0.05em; margin-bottom: 0.9rem; }
@@ -254,10 +263,11 @@
     .senpai-card .cite { margin-top: 0.9rem; font-family: var(--mono); font-size: 0.78rem; color: var(--ink-dim); border-top: 1px solid var(--line); padding-top: 0.8rem; }
     .senpai-card .acts { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
     .senpai-card .acts b { font-family: var(--mono); font-size: 0.72rem; padding: 0.35rem 0.7rem; border-radius: 6px; }
-    .acts .pri { background: var(--teal); color: #06231f; }
+    .acts .pri { background: var(--teal); color: #fff; }
     .acts .sec { border: 1px solid var(--line); color: var(--ink-dim); }
 
     .product-slide { padding-top: 5vh; padding-bottom: 7vh; }
+    .product-slide .cols { grid-template-columns: 0.86fr 1.14fr; gap: 2.4vw; }
     .product-slide h2 { font-size: clamp(1.9rem, 3.4vw, 3rem); margin-bottom: 1rem; }
     .product-slide .lead { font-size: clamp(0.95rem, 1.45vw, 1.2rem); line-height: 1.45; }
     .product-slide ul.clean { gap: 0.55rem; }
@@ -265,12 +275,21 @@
     .product-slide .senpai-card { padding: 1.05rem 1.15rem; }
     .product-slide .senpai-card p { font-size: 0.92rem; line-height: 1.42; }
     .product-slide .oneliner { margin-top: 1rem; font-size: 0.88rem; line-height: 1.35; }
+    .mock-shot {
+      border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+      background: #111820; box-shadow: 0 18px 38px rgba(37,58,78,0.16);
+    }
+    .mock-shot img { display: block; width: 100%; height: auto; }
+    .mock-shot figcaption {
+      padding: 0.5rem 0.65rem; font-family: var(--mono); font-size: 0.62rem;
+      color: var(--ink-dim); background: rgba(255,255,255,0.92); border-top: 1px solid var(--line);
+    }
 
     /* ---- demo slide ---- */
     .demo-hero { text-align: center; align-items: center; }
     .demo-badge {
       font-family: var(--mono); font-size: clamp(3rem, 9vw, 7rem); font-weight: 700;
-      letter-spacing: 0.1em; color: #fff;
+      letter-spacing: 0.1em; color: var(--ink);
     }
     .demo-badge .dot { color: var(--red); animation: blink 1.1s steps(1) infinite; }
     @keyframes blink { 50% { opacity: 0.25; } }
@@ -300,6 +319,20 @@
     .flow .step.grow { border-color: var(--green); color: var(--green); }
     .flow .cx { color: var(--purple); font-family: var(--mono); flex: none; }
 
+    .business-slide { padding-top: 5vh; padding-bottom: 8vh; }
+    .business-slide h2 { font-size: clamp(1.65rem, 3.2vw, 2.75rem); margin-bottom: 0.65rem; }
+    .business-slide .lead { font-size: clamp(0.86rem, 1.38vw, 1.12rem); line-height: 1.42; max-width: 74ch; }
+    .business-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1rem; margin: 1rem 0 0.7rem; }
+    .business-card {
+      min-height: 96px; border: 1px solid var(--line); background: rgba(255,255,255,0.72);
+      border-radius: 0; padding: 0.8rem 0.9rem;
+    }
+    .business-card .row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.65rem; margin-bottom: 0.55rem; }
+    .business-card h3 { font-size: clamp(0.95rem, 1.55vw, 1.25rem); line-height: 1.15; min-width: max-content; }
+    .business-card .price { color: #f05a2a; font-weight: 800; font-size: clamp(0.92rem, 1.42vw, 1.18rem); white-space: nowrap; }
+    .business-card p { color: var(--ink-dim); font-size: clamp(0.7rem, 1vw, 0.86rem); line-height: 1.32; }
+    .business-slide .oneliner { margin-top: 0.45rem; font-size: clamp(0.78rem, 1.18vw, 1rem); font-family: var(--sans); font-weight: 700; border-left-color: var(--ink); }
+
     /* ---- market wedge ---- */
     .wedge { display: flex; align-items: center; gap: 0; margin: 1.6rem 0 2rem; }
     .wedge .w {
@@ -323,7 +356,7 @@
     }
     .market-card.hl { border-color: var(--teal); box-shadow: inset 0 0 0 1px rgba(56,214,198,0.14); }
     .market-card .label { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.12em; }
-    .market-card .num { margin: 0.45rem 0; font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height: 1.05; font-weight: 700; color: #fff; }
+    .market-card .num { margin: 0.45rem 0; font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height: 1.05; font-weight: 700; color: var(--ink); }
     .market-card p { color: var(--ink-dim); font-size: 0.86rem; line-height: 1.38; }
     .market-slide .biz-grid { grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
     .market-slide .biz-grid .v { font-size: 0.88rem; line-height: 1.35; }
@@ -349,7 +382,7 @@
     .close-slide .lead { margin-left: auto; margin-right: auto; }
 
     /* ---- progress + nav ---- */
-    .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--teal); z-index: 10; transition: width 0.35s ease; box-shadow: 0 0 12px var(--teal); }
+    .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--teal); z-index: 10; transition: width 0.35s ease; box-shadow: 0 0 12px rgba(8,127,140,0.35); }
     .dots { position: fixed; bottom: 1.4vh; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 10; }
     .dots button { width: 9px; height: 9px; border-radius: 50%; border: none; background: var(--line); cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; }
     .dots button.on { background: var(--teal); transform: scale(1.25); }
@@ -371,6 +404,16 @@
       .market-slide .biz-grid .k { font-size: 0.62rem; }
       .market-slide .biz-grid .v { font-size: 0.68rem; line-height: 1.25; }
       .market-slide .oneliner { margin-top: 0.45rem; font-size: 0.66rem; }
+      .business-slide { padding-top: 4.5vh; padding-bottom: 7vh; }
+      .business-slide h2 { font-size: 1.55rem; margin-bottom: 0.45rem; }
+      .business-slide .lead { font-size: 0.74rem; line-height: 1.32; }
+      .business-cards { gap: 0.55rem; margin: 0.65rem 0 0.45rem; }
+      .business-card { min-height: 88px; padding: 0.55rem 0.6rem; }
+      .business-card .row { display: block; margin-bottom: 0.35rem; }
+      .business-card h3 { font-size: 0.9rem; }
+      .business-card .price { display: block; margin-top: 0.16rem; font-size: 0.82rem; white-space: normal; line-height: 1.16; }
+      .business-card p { font-size: 0.62rem; line-height: 1.24; }
+      .business-slide .oneliner { font-size: 0.68rem; line-height: 1.25; margin-top: 0.35rem; }
     }
   </style>
 </head>
@@ -382,9 +425,9 @@
     <!-- 1 — TITLE -->
     <section class="slide title-slide active">
       <div class="title-wrap">
-        <span class="senpai-badge">SENPAI AI · always watching</span>
-        <h1>From Drawing Revisions to <span class="teal">Rework Prevention</span></h1>
-        <p class="title-sub">A <strong>Company Brain for manufacturing</strong> — it turns a drawing's revision history into live design guidance, at the exact moment it matters.</p>
+        <span class="senpai-badge">SENPAI AI · 変更を見守る先輩</span>
+        <h1>図面変更履歴を<span class="teal">手戻り防止</span>へ</h1>
+        <p class="title-sub"><strong>製造業のCompany Brain</strong> — 図面の改訂履歴を、設計変更の瞬間に効く判断材料へ変える。</p>
       </div>
       <div class="meta-row">
         <div>c0mpiled AI Hackathon · Team T-company-brain</div>
@@ -393,200 +436,208 @@
 
     <!-- 2 — PROBLEM -->
     <section class="slide problem-slide">
-      <span class="kicker">The Problem</span>
-      <h2>The lesson existed.<br>Nobody saw it when it mattered.</h2>
-      <div class="problem-viz" aria-label="A recurrence story: lesson learned, many engineering change points, same failure returns">
+      <span class="kicker">課題</span>
+      <h2>教訓は残っていた。<br>でも、必要な瞬間に見えなかった。</h2>
+      <div class="problem-viz" aria-label="教訓、設計変更の多発点、再発を示すストーリー">
         <div class="story-card learned">
           <div>
             <div class="story-year">△1 · 2015</div>
-            <div class="story-signal good">learned</div>
+            <div class="story-signal good">教訓化</div>
           </div>
           <div>
-            <span class="story-mini red">8 mm failed</span>
-            <div class="story-big green">Fix: 10 mm</div>
-            <p>The lesson was captured in a drawing note.</p>
+            <span class="story-mini red">8 mmでNG</span>
+            <div class="story-big green">対策: 10 mm</div>
+            <p>教訓は図面注記に残っていた。</p>
           </div>
         </div>
         <div class="story-arrow">→</div>
         <div class="story-card split">
           <div>
-            <div class="story-year">2019 · next program</div>
-            <div class="story-signal warn">many change points</div>
+            <div class="story-year">2019 · 次期開発</div>
+            <div class="story-signal warn">変更の入口が多い</div>
           </div>
           <div class="change-node">10 → 8 mm</div>
           <div class="reason-cloud">
-            <div class="reason-chip">plan</div>
-            <div class="reason-chip">pkg</div>
-            <div class="reason-chip good">detail</div>
+            <div class="reason-chip">企画</div>
+            <div class="reason-chip">配置</div>
+            <div class="reason-chip good">詳細</div>
             <div class="reason-chip">CAE</div>
-            <div class="reason-chip">proto</div>
-            <div class="reason-chip">prod</div>
-            <div class="reason-chip">tool</div>
-            <div class="reason-chip hot">supply</div>
-            <div class="reason-chip">QA</div>
-            <div class="reason-chip">legal</div>
-            <div class="reason-chip">field</div>
-            <div class="reason-chip hot">weight</div>
+            <div class="reason-chip">試作</div>
+            <div class="reason-chip">生技</div>
+            <div class="reason-chip">治具</div>
+            <div class="reason-chip hot">調達</div>
+            <div class="reason-chip">品質</div>
+            <div class="reason-chip">法規</div>
+            <div class="reason-chip">市場</div>
+            <div class="reason-chip hot">軽量</div>
           </div>
-          <div class="lost-tag">change can start anywhere; the "why" gets buried</div>
+          <div class="lost-tag">変更はどこでも起きる。「なぜ」は埋もれる。</div>
         </div>
         <div class="story-arrow red">→</div>
         <div class="story-card fail">
           <div>
             <div class="story-year">△2 · 2020</div>
-            <div class="story-signal bad">same failure</div>
+            <div class="story-signal bad">同じ失敗</div>
           </div>
           <div>
-            <span class="story-mini red">8 mm again</span>
-            <div class="story-big red">RECURRENCE</div>
-            <p>The lesson existed, but nobody saw it during the edit.</p>
+            <span class="story-mini red">また8 mm</span>
+            <div class="story-big red">再発</div>
+            <p>教訓はあったが、変更中には見えなかった。</p>
           </div>
         </div>
       </div>
-      <p class="lead problem-caption">Knowledge is scattered across Excel, PPT, PDF, people's heads, and △ revision notes. Veterans retire. The "why" disappears. Observed inside a real automotive design floor.</p>
+      <p class="lead problem-caption">知見はExcel、PPT、PDF、人の頭、そして△改訂履歴に散らばっている。ベテランは退職し、「なぜ」は消える。実際の自動車設計現場で観測した痛み。</p>
     </section>
 
     <!-- 3 — SOLUTION APPROACH -->
     <section class="slide">
-      <span class="kicker">Solution Approach</span>
-      <h2>The knowledge was never missing.<br>It just couldn't be <span class="teal">executed</span>.</h2>
-      <p class="lead">Every existing tool waits for knowledge to be <strong>searched or formalized</strong> into a standard. But real design rationale lives across drawings, reports, people, and past decisions.</p>
-      <p class="lead" style="margin-top:1.2rem;">Large language models change that. A G-brain can retrieve the right company evidence, and the LLM can decide whether this edit deserves an interruption.</p>
-      <p class="oneliner">The EUREKA: the company brain does not just answer questions — it notices risk while you design.</p>
+      <span class="kicker">解決アプローチ</span>
+      <h2>知識は失われていない。<br>ただ、<span class="teal">実行可能</span>になっていなかった。</h2>
+      <p class="lead">既存ツールは、知識が<strong>検索される</strong>か、標準として<strong>形式化される</strong>のを待っている。でも本当の設計理由は、図面、報告書、人、過去の判断に分散している。</p>
+      <p class="lead" style="margin-top:1.2rem;">LLMがここを変える。G-brainが社内の根拠を取り出し、LLMが「この変更は今止めるべきか」を判断する。</p>
+      <p class="oneliner">発想の転換: Company Brainは質問に答えるだけでなく、設計中のリスクに気づく。</p>
     </section>
 
     <!-- 4 — PRODUCT OVERVIEW -->
     <section class="slide product-slide">
-      <span class="kicker">Product Overview</span>
+      <span class="kicker">プロダクト概要</span>
       <div class="cols">
         <div>
-          <h2>A senpai<br>watching your screen.</h2>
-          <p class="lead">The instant you make a risky edit, the AI interrupts — with the receipts:</p>
+          <h2>画面の後ろで<br>見てくれる先輩。</h2>
+          <p class="lead">危険な変更をした瞬間、AIが根拠付きで割り込む。</p>
           <ul class="clean">
-            <li>Which past <span class="mono">△</span> revision this matches</li>
-            <li>Which document is the source</li>
-            <li>Who solved it last time</li>
-            <li>What happened when it recurred</li>
+            <li>どの過去<span class="mono">△</span>改訂に似ているか</li>
+            <li>根拠になった文書はどれか</li>
+            <li>前回は誰が解決したか</li>
+            <li>再発時に何が起きたか</li>
           </ul>
-          <p class="lead" style="margin-top:0.85rem;">90-second demo: warning → evidence → recommendation → write-back.</p>
+          <p class="lead" style="margin-top:0.85rem;">90秒デモ: 警告 → 根拠 → 推奨 → 書き戻し。</p>
         </div>
-        <div class="senpai-card">
-          <div class="hd">SENPAI · on-edit warning</div>
-          <p>Filleting <span class="mono">R5 → R3</span> caused a stiffness drop before. In 2015 it forced a rework (rib added, △3).</p>
-          <p style="margin-top:0.6rem;">Use a <strong class="teal">relief cut</strong> instead — it worked in 2020 (△3).</p>
-          <div class="cite">src: FLG-SUS-001-A △2 · owner 佐藤 (Sato)</div>
-          <div class="acts">
-            <b class="pri">Apply recommendation</b>
-            <b class="sec">Proceed anyway</b>
-            <b class="sec">Ask 佐藤</b>
-          </div>
-        </div>
+        <figure class="mock-shot">
+          <img src="assets/product-mock-cad-workspace.png" alt="CAD画面上で設計変更理由を確認するSenpAIプロダクトモック">
+          <figcaption>Repository mock: CAD workspace + assistant / 変更理由を△履歴として記録</figcaption>
+        </figure>
       </div>
-      <p class="oneliner">Not a chatbot. Not search. A living company brain that can interrupt with evidence.</p>
+      <p class="oneliner">チャットボットでも検索でもない。根拠付きで割り込む、生きたCompany Brain。</p>
     </section>
 
     <!-- 5 — TECHNOLOGY -->
     <section class="slide tech-slide">
-      <span class="kicker">Technology</span>
-      <h2>A company brain that lets the LLM<br><span class="teal">notice risk</span> in context.</h2>
+      <span class="kicker">技術概要</span>
+      <h2>LLMが文脈の中で<br><span class="teal">リスクに気づく</span>ためのCompany Brain。</h2>
       <div class="layers">
         <div class="layer">
           <div class="n">01 · OBSERVE</div>
-          <h3>Design event stream</h3>
-          <p>CAD edits become semantic events: part, region, parameter, intent, and surrounding design context.</p>
+          <h3>設計イベント化</h3>
+          <p>CAD上の変更を、部品、領域、パラメータ、意図、周辺文脈を持つイベントに変換する。</p>
         </div>
         <div class="layer hl">
           <div class="n">02 · RETRIEVE</div>
-          <h3>G-brain retrieval</h3>
-          <p>△ notes, reports, people, past failures, and design rationale are pulled from the company brain as evidence.</p>
+          <h3>G-brain検索</h3>
+          <p>△注記、報告書、担当者、過去トラ、設計理由をCompany Brainから根拠として取り出す。</p>
         </div>
         <div class="layer">
           <div class="n">03 · REASON</div>
-          <h3>LLM risk trigger</h3>
-          <p>The LLM decides whether to interrupt, grounded only in retrieved evidence, and shows the receipts.</p>
+          <h3>LLMリスク発火</h3>
+          <p>LLMが取得根拠だけを使って、今割り込むべきか判断し、出典付きで表示する。</p>
         </div>
       </div>
-      <p class="oneliner">Not a brittle rule list. The trigger is an evidence-grounded LLM call over the company's living brain.</p>
+      <p class="oneliner">壊れやすいルールリストではない。生きたCompany Brain上で、根拠付きLLMが発火する。</p>
     </section>
 
     <!-- 6 — BUSINESS MODEL -->
-    <section class="slide">
-      <span class="kicker">Business Model</span>
-      <h2>Price against one prevented recurrence.</h2>
-      <div class="flow">
-        <div class="step">Land: 1 department<br><strong>¥12M-¥36M / year</strong></div>
-        <span class="cx">→</span>
-        <div class="step">Prove ROI<br><strong>one recurrence avoided</strong></div>
-        <span class="cx">→</span>
-        <div class="step">Expand across design,<br>process engineering, QA</div>
-        <span class="cx">→</span>
-        <div class="step grow">Each customer brain compounds</div>
+    <section class="slide business-slide">
+      <span class="kicker">ビジネスモデル</span>
+      <h2>Enterprise導入型で始める。</h2>
+      <p class="lead">図面は機密性が高い。オンプレ / プライベートクラウド前提の年額モデルで、信頼と導入支援を収益の一部にする。</p>
+      <div class="business-cards">
+        <div class="business-card">
+          <div class="row">
+            <h3>PoC導入費</h3>
+            <div class="price">300万〜1,000万円</div>
+          </div>
+          <p>過去図面100〜1,000枚で、変更理由抽出とMCPレビューを検証する。</p>
+        </div>
+        <div class="business-card">
+          <div class="row">
+            <h3>年額ライセンス</h3>
+            <div class="price">500万〜2,000万円 / 拠点</div>
+          </div>
+          <p>変更理由DB、MCPサーバー、レビューUI、CAD/PLM連携を提供する。</p>
+        </div>
+        <div class="business-card">
+          <div class="row">
+            <h3>利用量課金</h3>
+            <div class="price">図面枚数・レビュー回数</div>
+          </div>
+          <p>大量処理や複数部門展開に応じてスケールする。</p>
+        </div>
+        <div class="business-card">
+          <div class="row">
+            <h3>導入支援</h3>
+            <div class="price">個別見積</div>
+          </div>
+          <p>社内標準の構造化、ベテランレビュー、データ整備を支援する。</p>
+        </div>
       </div>
-      <ul class="clean">
-        <li>Start with automotive design departments where recurrence cost is already visible.</li>
-        <li>The write-back loop makes every accepted change part of the next generation's company brain.</li>
-      </ul>
+      <p class="oneliner">最初から安価なSaaSにしない。機密図面を扱うため、信頼と導入支援が価値になる。</p>
     </section>
 
     <!-- 7 — COMPETITION -->
     <section class="slide">
-      <span class="kicker">Competition</span>
-      <h2>Search finds documents.<br>SenpAI catches risky design decisions.</h2>
+      <span class="kicker">競合比較</span>
+      <h2>検索は文書を見つける。<br>SenpAIは危険な設計変更を捕まえる。</h2>
       <table class="comp-table">
-        <tr><th>Product</th><th>Retrieves knowledge</th><th>Reasons over edit</th><th>Interrupts in CAD</th><th>Writes back</th></tr>
-        <tr><td>CoLab</td><td><span class="yes">yes</span></td><td><span class="partial">formal rules</span></td><td><span class="partial">review flow</span></td><td><span class="no">no</span></td></tr>
-        <tr><td>Leo AI</td><td><span class="yes">yes</span></td><td><span class="partial">knowledge layer</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
-        <tr><td>CADDi</td><td><span class="yes">drawings</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
-        <tr class="hero"><td>SenpAI</td><td><span class="yes">G-brain</span></td><td><span class="yes">LLM + evidence</span></td><td><span class="yes">yes</span></td><td><span class="yes">yes</span></td></tr>
+        <tr><th>製品</th><th>知識検索</th><th>変更判断</th><th>CAD中断</th><th>書き戻し</th></tr>
+        <tr><td>CoLab</td><td><span class="yes">あり</span></td><td><span class="partial">ルール</span></td><td><span class="partial">レビュー</span></td><td><span class="no">なし</span></td></tr>
+        <tr><td>Leo AI</td><td><span class="yes">あり</span></td><td><span class="partial">知識層</span></td><td><span class="no">なし</span></td><td><span class="no">なし</span></td></tr>
+        <tr><td>CADDi</td><td><span class="yes">図面</span></td><td><span class="no">なし</span></td><td><span class="no">なし</span></td><td><span class="no">なし</span></td></tr>
+        <tr class="hero"><td>SenpAI</td><td><span class="yes">G-brain</span></td><td><span class="yes">LLM+根拠</span></td><td><span class="yes">あり</span></td><td><span class="yes">あり</span></td></tr>
       </table>
-      <p class="oneliner">Retrieve + reason + interrupt + write-back. That is the wedge.</p>
+      <p class="oneliner">検索 + 判断 + 割り込み + 書き戻し。この4点セットが差別化。</p>
     </section>
 
     <!-- 8 — TAM / SAM / SOM -->
     <section class="slide market-slide">
       <span class="kicker">TAM · SAM · SOM</span>
-      <h2>Start from a narrow wedge.<br>Own manufacturing's brain.</h2>
+      <h2>狭い入口から始める。<br>製造業のBrainを取りに行く。</h2>
       <div class="market-grid">
         <div class="market-card">
           <div class="label">TAM</div>
           <div class="num">&yen;350B-700B</div>
-          <p>Company Brain for manufacturing design, production engineering, and quality knowledge.</p>
+          <p>製造業の設計、生産技術、品質知識を扱うCompany Brain市場。</p>
         </div>
         <div class="market-card">
           <div class="label">SAM</div>
           <div class="num">&yen;67B-134B</div>
-          <p>Automotive OEM / Tier1 / Tier2 technical departments where recurrence prevention already has budget gravity.</p>
+          <p>再発防止の痛みが大きい自動車OEM / Tier1 / Tier2の技術部門。</p>
         </div>
         <div class="market-card hl">
           <div class="label">SOM</div>
           <div class="num">&yen;60M-720M ARR</div>
-          <p>First 5-20 design departments at &yen;12M-36M per department per year.</p>
+          <p>最初の5〜20部署。1部署あたり年1,200万〜3,600万円。</p>
         </div>
       </div>
       <div class="biz-grid">
-        <div><div class="k">Entry Wedge</div><div class="v">Recurrence prevention in automotive design departments.</div></div>
-        <div><div class="k">ROI Logic</div><div class="v">One recurrence costs roughly &yen;20M-&yen;200M in rework, retest, delay, and coordination.</div></div>
-        <div><div class="k">Source Basis</div><div class="v">JAMA: auto is 19.2% of Japan manufacturing shipments; 5.59M auto-related workers.</div></div>
+        <div><div class="k">入口</div><div class="v">自動車設計部門の再発防止。</div></div>
+        <div><div class="k">ROI</div><div class="v">再発1件で約2,000万〜2億円の手戻り、再評価、遅延、調整コスト。</div></div>
+        <div><div class="k">根拠</div><div class="v">JAMA: 自動車は日本製造業出荷額の19.2%、関連就業人口559万人。</div></div>
       </div>
-      <p class="oneliner amber" style="border-color:var(--amber);">SOM starts where one prevented recurrence pays for the product.</p>
+      <p class="oneliner amber" style="border-color:var(--amber);">SOMは「再発1件を防げば回収できる」最初の部署から始まる。</p>
     </section>
 
     <!-- 9 — CLOSE -->
     <section class="slide close-slide">
       <span class="kicker">SenpAI</span>
-      <h2>Every factory needs this brain.</h2>
-      <p class="lead">We start with recurrence prevention in automotive design, then expand to the living company brain for manufacturing.</p>
-      <div class="qr" style="margin-top:2rem;">
-        <span>Live demo →</span>
-        <div class="qr-box"><span>URL</span></div>
-      </div>
+      <h2>すべての工場に、このBrainを。</h2>
+      <p class="lead">自動車設計の再発防止から始め、製造業の生きたCompany Brainへ広げる。</p>
     </section>
 
   </div>
 
   <div class="dots" id="dots"></div>
   <div class="pagenum" id="pagenum">01</div>
-  <div class="hint">← → / space · F fullscreen</div>
+  <div class="hint">← → / space · F 全画面</div>
 
   <script>
     const slides = Array.from(document.querySelectorAll('.slide'));
