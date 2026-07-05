@@ -80,7 +80,7 @@
       color: var(--ink);
       border-left: 3px solid var(--teal);
       padding-left: 1rem;
-      margin-top: auto;
+      margin-top: 1.2rem;
       line-height: 1.5;
     }
     .mono { font-family: var(--mono); }
@@ -178,6 +178,16 @@
     .viz-cap { font-family: var(--mono); font-size: 0.74rem; color: var(--ink-faint); margin-top: 0.5rem; text-align: center; }
     .viz-cap b { color: var(--red); font-weight: 700; }
 
+    .problem-slide { padding-top: 5vh; padding-bottom: 8vh; }
+    .problem-slide h2 { font-size: clamp(1.85rem, 3.4vw, 2.9rem); margin-bottom: 0.7rem; }
+    .problem-slide .problem-viz { margin: 0.55rem 0 0.65rem; }
+    .problem-slide .reason-map { padding: 0.7rem; }
+    .problem-slide .reason-center { margin-bottom: 0.55rem; padding: 0.35rem 0.65rem; font-size: 0.72rem; }
+    .problem-slide .reason-grid { gap: 0.38rem; }
+    .problem-slide .reason { min-height: 34px; font-size: 0.64rem; padding: 0.32rem; }
+    .problem-slide .reason-note { margin-top: 0.5rem; font-size: 0.6rem; }
+    .problem-slide .problem-caption { font-size: 0.9rem; line-height: 1.32; max-width: none; }
+
     /* ---- two-col ---- */
     .cols { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3vw; align-items: center; }
     .cols.tech { grid-template-columns: 1fr; }
@@ -197,6 +207,15 @@
     .senpai-card .acts b { font-family: var(--mono); font-size: 0.72rem; padding: 0.35rem 0.7rem; border-radius: 6px; }
     .acts .pri { background: var(--teal); color: #06231f; }
     .acts .sec { border: 1px solid var(--line); color: var(--ink-dim); }
+
+    .product-slide { padding-top: 5vh; padding-bottom: 7vh; }
+    .product-slide h2 { font-size: clamp(1.9rem, 3.4vw, 3rem); margin-bottom: 1rem; }
+    .product-slide .lead { font-size: clamp(0.95rem, 1.45vw, 1.2rem); line-height: 1.45; }
+    .product-slide ul.clean { gap: 0.55rem; }
+    .product-slide ul.clean li { font-size: clamp(0.9rem, 1.25vw, 1.08rem); }
+    .product-slide .senpai-card { padding: 1.05rem 1.15rem; }
+    .product-slide .senpai-card p { font-size: 0.92rem; line-height: 1.42; }
+    .product-slide .oneliner { margin-top: 1rem; font-size: 0.88rem; line-height: 1.35; }
 
     /* ---- demo slide ---- */
     .demo-hero { text-align: center; align-items: center; }
@@ -221,6 +240,11 @@
     .layer.hl { border-color: var(--teal); }
     .layer.hl h3 { color: var(--teal); }
 
+    .tech-slide { padding-top: 5vh; padding-bottom: 8vh; }
+    .tech-slide h2 { font-size: clamp(1.85rem, 3.4vw, 2.9rem); margin-bottom: 1rem; }
+    .tech-slide .layers { margin: 1.1rem 0; }
+    .tech-slide .oneliner { font-size: 0.82rem; line-height: 1.32; margin-top: 0.75rem; }
+
     /* ---- flywheel ---- */
     .flow { display: flex; align-items: center; gap: 0.6rem; margin: 2rem 0; flex-wrap: wrap; }
     .flow .step { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.95rem; line-height: 1.3; flex: 1; min-width: 0; }
@@ -241,6 +265,40 @@
     .biz-grid .k { font-family: var(--mono); font-size: 0.78rem; color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; }
     .biz-grid .v { font-size: 1.02rem; line-height: 1.4; color: var(--ink); margin-top: 0.2rem; }
 
+    .market-slide { padding-top: 5vh; padding-bottom: 8vh; }
+    .market-slide h2 { font-size: clamp(1.85rem, 3.4vw, 2.9rem); margin-bottom: 1rem; }
+    .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.3rem 0 1rem; }
+    .market-card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+      padding: 1rem; min-height: 150px;
+    }
+    .market-card.hl { border-color: var(--teal); box-shadow: inset 0 0 0 1px rgba(56,214,198,0.14); }
+    .market-card .label { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.12em; }
+    .market-card .num { margin: 0.45rem 0; font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height: 1.05; font-weight: 700; color: #fff; }
+    .market-card p { color: var(--ink-dim); font-size: 0.86rem; line-height: 1.38; }
+    .market-slide .biz-grid { grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+    .market-slide .biz-grid .v { font-size: 0.88rem; line-height: 1.35; }
+    .market-slide .oneliner { font-size: 0.82rem; line-height: 1.32; margin-top: 0.9rem; }
+
+    .comp-table {
+      width: 100%; border-collapse: collapse; margin-top: 1.4rem;
+      font-size: clamp(0.78rem, 1.25vw, 1rem);
+    }
+    .comp-table th, .comp-table td {
+      border-top: 1px solid var(--line); padding: 0.62rem 0.7rem;
+      text-align: left; vertical-align: middle; line-height: 1.28;
+    }
+    .comp-table th { font-family: var(--mono); color: var(--ink-faint); font-size: 0.72rem; font-weight: 500; }
+    .comp-table td:first-child { font-weight: 700; color: var(--ink); }
+    .comp-table .yes { color: var(--green); font-family: var(--mono); }
+    .comp-table .partial { color: var(--amber); font-family: var(--mono); }
+    .comp-table .no { color: var(--ink-faint); font-family: var(--mono); }
+    .comp-table tr.hero td { border-color: rgba(56,214,198,0.45); background: rgba(56,214,198,0.06); }
+
+    .close-slide { align-items: center; text-align: center; }
+    .close-slide h2 { max-width: 13ch; margin: 0 auto 1.2rem; }
+    .close-slide .lead { margin-left: auto; margin-right: auto; }
+
     /* ---- progress + nav ---- */
     .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--teal); z-index: 10; transition: width 0.35s ease; box-shadow: 0 0 12px var(--teal); }
     .dots { position: fixed; bottom: 1.4vh; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 10; }
@@ -256,6 +314,14 @@
       .layer { padding: 1rem; }
       .layer h3 { font-size: 1.02rem; overflow-wrap: anywhere; }
       .layer p { font-size: 0.84rem; }
+      .market-grid { gap: 0.55rem; margin: 0.75rem 0 0.65rem; }
+      .market-card { min-height: 108px; padding: 0.65rem; }
+      .market-card .num { font-size: 1.08rem; }
+      .market-card p { font-size: 0.68rem; line-height: 1.25; }
+      .market-slide .biz-grid { gap: 0.45rem; }
+      .market-slide .biz-grid .k { font-size: 0.62rem; }
+      .market-slide .biz-grid .v { font-size: 0.68rem; line-height: 1.25; }
+      .market-slide .oneliner { margin-top: 0.45rem; font-size: 0.66rem; }
     }
   </style>
 </head>
@@ -281,7 +347,7 @@
     </section>
 
     <!-- 2 — PROBLEM -->
-    <section class="slide">
+    <section class="slide problem-slide">
       <span class="kicker">The Problem</span>
       <h2>The lesson existed.<br>Nobody saw it when it mattered.</h2>
       <div class="problem-viz">
@@ -348,25 +414,21 @@
           <div class="viz-cap">Plate thickness of the <em>same</em> flange over time — the 2015 lesson <b>dipped back into the red in 2020</b>.</div>
         </div>
       </div>
-      <ul class="clean">
-        <li>Knowledge is scattered across Excel, PPT, PDF, people's heads — and inside the <strong>△ revision notes of the CAD drawing itself</strong>.</li>
-        <li>Veterans retire. The people who hold this knowledge are physically disappearing.</li>
-      </ul>
-      <p class="oneliner">Observed inside a real automotive design floor. This is not a hypothesis.</p>
+      <p class="lead problem-caption">Knowledge is scattered across Excel, PPT, PDF, people's heads, and △ revision notes. Veterans retire. The "why" disappears. Observed inside a real automotive design floor.</p>
     </section>
 
-    <!-- 3 — WHY NOW -->
+    <!-- 3 — SOLUTION APPROACH -->
     <section class="slide">
-      <span class="kicker">Why Now</span>
+      <span class="kicker">Solution Approach</span>
       <h2>The knowledge was never missing.<br>It just couldn't be <span class="teal">executed</span>.</h2>
       <p class="lead">Every existing tool waits for knowledge to be <strong>searched or formalized</strong> into a standard. But real design rationale lives across drawings, reports, people, and past decisions.</p>
       <p class="lead" style="margin-top:1.2rem;">Large language models change that. A G-brain can retrieve the right company evidence, and the LLM can decide whether this edit deserves an interruption.</p>
       <p class="oneliner">The EUREKA: the company brain does not just answer questions — it notices risk while you design.</p>
     </section>
 
-    <!-- 4 — SOLUTION -->
-    <section class="slide">
-      <span class="kicker">The Solution</span>
+    <!-- 4 — PRODUCT OVERVIEW -->
+    <section class="slide product-slide">
+      <span class="kicker">Product Overview</span>
       <div class="cols">
         <div>
           <h2>A senpai<br>watching your screen.</h2>
@@ -377,6 +439,7 @@
             <li>Who solved it last time</li>
             <li>What happened when it recurred</li>
           </ul>
+          <p class="lead" style="margin-top:0.85rem;">90-second demo: warning → evidence → recommendation → write-back.</p>
         </div>
         <div class="senpai-card">
           <div class="hd">SENPAI · on-edit warning</div>
@@ -393,26 +456,9 @@
       <p class="oneliner">Not a chatbot. Not search. A living company brain that can interrupt with evidence.</p>
     </section>
 
-    <!-- 5 — DEMO -->
-    <section class="slide demo-hero">
-      <span class="kicker">90-Second Live Demo</span>
-      <div class="demo-badge">DEMO<span class="dot">_</span></div>
-      <table class="beat-table">
-        <tr><td class="t">0–15s</td><td class="b">The recurrence</td><td class="s">2015's lesson reappeared in 2020 — asleep inside the △ history</td></tr>
-        <tr><td class="t">15–40s</td><td class="b">The warning moment</td><td class="s">Edit R5→R3 on the 2025 model → the senpai card interrupts</td></tr>
-        <tr><td class="t">40–60s</td><td class="b">The compiler</td><td class="s">Drop in a report → a structured lesson (JSON) is generated live</td></tr>
-        <tr><td class="t">60–80s</td><td class="b">The flywheel</td><td class="s">Apply the relief cut → "For interference, right?" → Yes → graph grows a node</td></tr>
-        <tr><td class="t">80–90s</td><td class="b">The close</td><td class="s">Every factory needs this brain. → live URL / QR</td></tr>
-      </table>
-      <div class="meta-row">
-        <div>G-brain context · evidence-grounded LLM trigger</div>
-        <div class="qr"><span>Try it live →</span><div class="qr-box"><span>URL</span></div></div>
-      </div>
-    </section>
-
-    <!-- 6 — HOW IT WORKS -->
-    <section class="slide">
-      <span class="kicker">How It Works</span>
+    <!-- 5 — TECHNOLOGY -->
+    <section class="slide tech-slide">
+      <span class="kicker">Technology</span>
       <h2>A company brain that lets the LLM<br><span class="teal">notice risk</span> in context.</h2>
       <div class="layers">
         <div class="layer">
@@ -434,58 +480,77 @@
       <p class="oneliner">Not a brittle rule list. The trigger is an evidence-grounded LLM call over the company's living brain.</p>
     </section>
 
-    <!-- 7 — FLYWHEEL -->
+    <!-- 6 — BUSINESS MODEL -->
     <section class="slide">
-      <span class="kicker">The Moat</span>
-      <h2>The more you design,<br>the smarter it gets.</h2>
+      <span class="kicker">Business Model</span>
+      <h2>Price against one prevented recurrence.</h2>
       <div class="flow">
-        <div class="step">You confirm a design change</div>
+        <div class="step">Land: 1 department<br><strong>¥12M-¥36M / year</strong></div>
         <span class="cx">→</span>
-        <div class="step">AI asks one tap: <em>"For interference, right?"</em></div>
+        <div class="step">Prove ROI<br><strong>one recurrence avoided</strong></div>
         <span class="cx">→</span>
-        <div class="step">You answer <strong>Yes</strong></div>
+        <div class="step">Expand across design,<br>process engineering, QA</div>
         <span class="cx">→</span>
-        <div class="step grow">Structured data for the next model accumulates — the brain just grew</div>
+        <div class="step grow">Each customer brain compounds</div>
       </div>
       <ul class="clean">
-        <li>Every competitor (CoLab, Leo, CADDi) only <strong>reads</strong>. We have the <strong>write loop</strong>.</li>
-        <li>Customer data compounds → switching cost → <strong class="teal">a data flywheel = the investor moat</strong>.</li>
+        <li>Start with automotive design departments where recurrence cost is already visible.</li>
+        <li>The write-back loop makes every accepted change part of the next generation's company brain.</li>
       </ul>
-      <p class="oneliner">Design knowledge → process knowledge → quality assurance. Same structure, expanding surface.</p>
     </section>
 
-    <!-- 8 — MARKET / BUSINESS / ASK -->
+    <!-- 7 — COMPETITION -->
     <section class="slide">
-      <span class="kicker">Market · Business · Ask</span>
+      <span class="kicker">Competition</span>
+      <h2>Search finds documents.<br>SenpAI catches risky design decisions.</h2>
+      <table class="comp-table">
+        <tr><th>Product</th><th>Retrieves knowledge</th><th>Reasons over edit</th><th>Interrupts in CAD</th><th>Writes back</th></tr>
+        <tr><td>CoLab</td><td><span class="yes">yes</span></td><td><span class="partial">formal rules</span></td><td><span class="partial">review flow</span></td><td><span class="no">no</span></td></tr>
+        <tr><td>Leo AI</td><td><span class="yes">yes</span></td><td><span class="partial">knowledge layer</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
+        <tr><td>CADDi</td><td><span class="yes">drawings</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
+        <tr class="hero"><td>SenpAI</td><td><span class="yes">G-brain</span></td><td><span class="yes">LLM + evidence</span></td><td><span class="yes">yes</span></td><td><span class="yes">yes</span></td></tr>
+      </table>
+      <p class="oneliner">Retrieve + reason + interrupt + write-back. That is the wedge.</p>
+    </section>
+
+    <!-- 8 — TAM / SAM / SOM -->
+    <section class="slide market-slide">
+      <span class="kicker">TAM · SAM · SOM</span>
       <h2>Start from a narrow wedge.<br>Own manufacturing's brain.</h2>
-      <div class="wedge">
-        <div class="w">Recurrence prevention in design</div>
-        <span class="gt">→</span>
-        <div class="w">Automotive supply chain</div>
-        <span class="gt">→</span>
-        <div class="w">All manufacturing</div>
+      <div class="market-grid">
+        <div class="market-card">
+          <div class="label">TAM</div>
+          <div class="num">&yen;350B-700B</div>
+          <p>Company Brain for manufacturing design, production engineering, and quality knowledge.</p>
+        </div>
+        <div class="market-card">
+          <div class="label">SAM</div>
+          <div class="num">&yen;67B-134B</div>
+          <p>Automotive OEM / Tier1 / Tier2 technical departments where recurrence prevention already has budget gravity.</p>
+        </div>
+        <div class="market-card hl">
+          <div class="label">SOM</div>
+          <div class="num">&yen;60M-720M ARR</div>
+          <p>First 5-20 design departments at &yen;12M-36M per department per year.</p>
+        </div>
       </div>
       <div class="biz-grid">
-        <div><div class="k">Unfair advantage</div><div class="v">We work inside the automaker — deep problem resolution + access to the first customer.</div></div>
-        <div><div class="k">Model</div><div class="v">Per-seat SaaS by department. PoC ROI = one prevented recurrence pays the annual license.</div></div>
-        <div><div class="k">First customer</div><div class="v">An automotive design department (product / die / equipment engineers).</div></div>
-        <div><div class="k">Vision</div><div class="v">Every factory in the world runs on our Company Brain.</div></div>
+        <div><div class="k">Entry Wedge</div><div class="v">Recurrence prevention in automotive design departments.</div></div>
+        <div><div class="k">ROI Logic</div><div class="v">One recurrence costs roughly &yen;20M-&yen;200M in rework, retest, delay, and coordination.</div></div>
+        <div><div class="k">Source Basis</div><div class="v">JAMA: auto is 19.2% of Japan manufacturing shipments; 5.59M auto-related workers.</div></div>
       </div>
-      <p class="oneliner amber" style="border-color:var(--amber);">Every factory needs this brain. → live URL / QR</p>
+      <p class="oneliner amber" style="border-color:var(--amber);">SOM starts where one prevented recurrence pays for the product.</p>
     </section>
 
-    <!-- 9 — APPENDIX (Q&A) -->
-    <section class="slide">
-      <span class="appendix-tag">APPENDIX · Q&amp;A</span>
-      <span class="kicker">Anticipated Questions</span>
-      <h2>Defensible answers.</h2>
-      <ul class="clean">
-        <li><strong>"Can it plug into real CAD?"</strong> — Via CAD plug-in APIs (CATIA / NX / SolidWorks all expose add-in APIs). Explicitly out of scope for today.</li>
-        <li><strong>"What about false positives?"</strong> — The LLM can only fire with retrieved evidence from the company brain; every warning shows source △, report, and past outcome.</li>
-        <li><strong>"Who are the competitors?"</strong> — CoLab AutoReview (closest, read-only) · Leo AI · CADDi · DraftAid. None have the write loop.</li>
-        <li><strong>The Assignment</strong> — Collect 50 real drawings and reports, measure how often G-brain retrieval gives enough evidence for a useful LLM warning. That number decides where we stand vs. CADDi / CoLab.</li>
-      </ul>
-      <p class="oneliner">Backup ladder: full live → recorded extraction → typewriter pseudo-animation. A working build always runs locally + tethering.</p>
+    <!-- 9 — CLOSE -->
+    <section class="slide close-slide">
+      <span class="kicker">SenpAI</span>
+      <h2>Every factory needs this brain.</h2>
+      <p class="lead">We start with recurrence prevention in automotive design, then expand to the living company brain for manufacturing.</p>
+      <div class="qr" style="margin-top:2rem;">
+        <span>Live demo →</span>
+        <div class="qr-box"><span>URL</span></div>
+      </div>
     </section>
 
   </div>
