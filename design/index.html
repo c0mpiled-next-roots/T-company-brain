@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-company-brain デザイン</title>
+  <style>
+    :root {
+      /* カラーパレット（仮） */
+      --color-primary: #2563eb;
+      --color-secondary: #64748b;
+      --color-bg: #f8fafc;
+      --color-text: #1e293b;
+
+      /* タイポグラフィ */
+      --font-base: "Hiragino Sans", "Yu Gothic", sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-base);
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 40px;
+    }
+
+    header {
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--color-primary);
+      padding-bottom: 8px;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 16px;
+    }
+
+    .swatch {
+      width: 120px;
+      height: 80px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px;
+      color: #fff;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>T-company-brain デザイン</h1>
+    <p>画面デザイン・UIコンポーネントの検討用ページ</p>
+  </header>
+
+  <section class="section">
+    <h2>カラーパレット</h2>
+    <div class="swatches">
+      <div class="swatch" style="background: var(--color-primary)">primary</div>
+      <div class="swatch" style="background: var(--color-secondary)">secondary</div>
+      <div class="swatch" style="background: var(--color-text)">text</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>画面デザイン</h2>
+    <p>各画面のモックアップをここに追加していく</p>
+  </section>
+
+  <section class="section">
+    <h2>コンポーネント</h2>
+    <p>ボタン・フォームなどのUIコンポーネントをここに追加していく</p>
+  </section>
+</body>
+</html>
