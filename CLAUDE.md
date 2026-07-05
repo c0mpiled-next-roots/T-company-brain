@@ -10,6 +10,8 @@ T-company-brain — ハッカソン用プロジェクト。
 
 - `presentation/` — プレゼン資料（HTMLスライド）
 - `design/` — デザイン検討（カラーパレット・モックアップ・コンポーネント）
+- `docs/` — 企画ドキュメント（DESIGN-DOC.md=承認済み設計書 / PREMISES.md=前提 / APPROACHES.md=実装アプローチ比較）
+- `references/` / `transcripts/` — 参考資料・企画メモ
 
 ## 作業ルール
 
