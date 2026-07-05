@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — CAD workspace + assistant</title>
+<style>
+  :root {
+    /* ローファイ・ワイヤー用のダークCADトーン（仮／構造確認が目的） */
+    --bg:        #16191d;
+    --panel:     #1e2228;
+    --panel-2:   #23282f;
+    --line:      #333a43;
+    --line-2:    #414a55;
+    --text:      #c9ced5;
+    --muted:     #838b95;
+    --faint:     #5a626c;
+    --accent:    #3fb6a8;  /* AI / 確認 */
+    --danger:    #e0574d;  /* 警告 */
+    --ok:        #57b284;  /* 記録済み */
+    --mono: "SFMono-Regular", "Consolas", "Menlo", monospace;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--sans); background: #0e1013; color: var(--text); padding: 32px; font-size: 14px; line-height: 1.5; }
+
+  .doc-head { max-width: 1120px; margin: 0 auto 20px; }
+  .doc-head h1 { font-size: 18px; font-weight: 500; }
+  .doc-head p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .tag { display: inline-block; font-family: var(--mono); font-size: 11px; color: var(--faint);
+         border: 1px dashed var(--line-2); border-radius: 4px; padding: 1px 6px; margin-right: 6px; }
+
+  .frame { max-width: 1120px; margin: 0 auto 40px; }
+  .frame > .cap { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+
+  /* ---- メイン画面（ヒーロー） ---- */
+  .app { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+
+  .topbar { height: 44px; display: flex; align-items: center; gap: 14px; padding: 0 12px;
+            background: var(--panel); border-bottom: 1px solid var(--line); }
+  .topbar .logo { width: 22px; height: 22px; border: 1px solid var(--line-2); border-radius: 5px; }
+  .topbar .part { font-family: var(--mono); font-size: 13px; }
+  .topbar .part .gen { color: var(--muted); font-size: 11px; margin-left: 6px; }
+  .topbar .spacer { flex: 1; }
+  .topbar .tool { width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 5px; color: var(--faint);
+                  display: grid; place-items: center; font-size: 12px; }
+  .topbar .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--panel-2); border: 1px solid var(--line-2); }
+
+  .body { display: flex; height: 560px; }
+
+  .rail { width: 48px; background: var(--panel); border-right: 1px solid var(--line);
+          display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 10px; }
+  .rail .ico { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 6px; color: var(--faint);
+               display: grid; place-items: center; font-size: 13px; }
+  .rail .ico.on { border-color: var(--accent); color: var(--accent); }
+
+  /* CADビューポート */
+  .viewport { flex: 1; position: relative; background:
+      repeating-linear-gradient(0deg, transparent 0 39px, rgba(255,255,255,.025) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,.025) 39px 40px),
+      var(--bg); }
+  .viewport .vp-label { position: absolute; top: 10px; left: 12px; font-family: var(--mono);
+                        font-size: 11px; color: var(--faint); }
+  .viewport svg { position: absolute; inset: 0; margin: auto; }
+  .diffchip { position: absolute; top: 12px; right: 14px; background: var(--panel-2); border: 1px solid var(--accent);
+              border-radius: 6px; padding: 6px 10px; font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .diffchip .k { color: var(--muted); margin-right: 6px; }
+
+  /* アシスタントパネル */
+  .assist { width: 340px; background: var(--panel); border-left: 1px solid var(--line);
+            display: flex; flex-direction: column; }
+  .assist .head { height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
+                  border-bottom: 1px solid var(--line); font-size: 13px; }
+  .assist .head .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .assist .head .state { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--faint); }
+  .assist .stream { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+  .assist .foot { border-top: 1px solid var(--line); padding: 10px 12px; }
+  .inputbox { border: 1px solid var(--line-2); border-radius: 8px; padding: 9px 11px; color: var(--faint);
+              font-size: 12px; font-family: var(--sans); background: var(--bg); }
+
+  /* パネル内の部品 */
+  .ctx { border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+  .ctx .row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .ctx .row + .row { margin-top: 5px; }
+  .msg { font-size: 12px; color: var(--muted); }
+  .msg.ai { color: var(--text); }
+  .bubble { border: 1px solid var(--line-2); border-radius: 8px; padding: 10px 11px; font-size: 12.5px; }
+  .bubble .who { font-family: var(--mono); font-size: 10px; color: var(--accent); margin-bottom: 5px; }
+  .opt { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-2); border-radius: 7px;
+         padding: 9px 10px; font-size: 12.5px; }
+  .opt + .opt { margin-top: 7px; }
+  .opt .radio { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--faint); flex: none; }
+  .opt.sel { border-color: var(--accent); }
+  .opt.sel .radio { border-color: var(--accent); background:
+      radial-gradient(circle at center, var(--accent) 0 4px, transparent 5px); }
+  .opt .sub { color: var(--muted); font-family: var(--mono); font-size: 10px; }
+  .btns { display: flex; gap: 8px; margin-top: 12px; }
+  .btn { flex: 1; text-align: center; border-radius: 7px; padding: 9px 0; font-size: 12.5px; border: 1px solid var(--line-2); color: var(--text); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #06231f; }
+  .btn.ghost { color: var(--muted); }
+
+  /* ---- ステート・ストリップ ---- */
+  .states { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1120px; margin: 0 auto; }
+  .mini { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .mini .mhead { height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-bottom: 1px solid var(--line);
+                 font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .mini .mhead .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .mini .mbody { padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 210px; }
+  .d-ai { background: var(--accent); } .d-warn { background: var(--danger); } .d-ok { background: var(--ok); }
+
+  .analyzing { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .analyzing .bar { flex: 1; height: 4px; border-radius: 3px; background:
+      repeating-linear-gradient(90deg, var(--line-2) 0 8px, transparent 8px 16px); }
+
+  /* ---- モーダル（分岐A） ---- */
+  .modal-frame { position: relative; }
+  .modal-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; }
+  .modal { width: 460px; background: var(--panel); border: 1px solid var(--danger); border-radius: 12px; overflow: hidden; }
+  .modal .mh { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+  .modal .mh .badge { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--danger); color: var(--danger);
+                      display: grid; place-items: center; font-size: 13px; flex: none; }
+  .modal .mh .t { font-size: 14px; }
+  .modal .mh .t .sub { color: var(--muted); font-size: 11px; font-family: var(--mono); }
+  .modal .mc { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .modal .mc p { font-size: 13px; }
+  .evi { border-left: 2px solid var(--danger); background: var(--panel-2); border-radius: 0 6px 6px 0; padding: 10px 12px; }
+  .evi .h { font-family: var(--mono); font-size: 10px; color: var(--danger); margin-bottom: 6px; }
+  .evi .line { font-size: 12px; color: var(--muted); }
+  .evi .line b { color: var(--text); font-weight: 500; }
+  .rec { border-left: 2px solid var(--ok); background: var(--panel-2); border-radius: 0 6px 6px 0; padding: 10px 12px; }
+  .rec .h { font-family: var(--mono); font-size: 10px; color: var(--ok); margin-bottom: 6px; }
+  .rec .line { font-size: 12.5px; }
+  .modal .ma { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; gap: 8px; }
+  .btn.danger { border-color: var(--danger); color: var(--danger); }
+  .btn.solid-ok { background: var(--ok); border-color: var(--ok); color: #082018; }
+
+  .legend { max-width: 1120px; margin: 28px auto 0; font-size: 12px; color: var(--muted); }
+  .legend span { font-family: var(--mono); margin-right: 16px; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+  <div class="doc-head">
+    <h1>Wireframe — CAD workspace + assistant（ヒーロー画面）</h1>
+    <p>
+      <span class="tag">lo-fi</span><span class="tag">dark CAD tone</span><span class="tag">EN UI labels</span>
+      関連: design/ux/core-loop.md ／ すべて構造確認用の仮レイアウト
+    </p>
+  </div>
+
+  <!-- ============ フレーム1：メイン画面 ============ -->
+  <div class="frame">
+    <div class="cap">// FRAME 1 — main screen（アシスタント = S3b Reason capture 状態を表示）</div>
+    <div class="app">
+      <div class="topbar">
+        <div class="logo"></div>
+        <div class="part">FLG-SUS-001-C <span class="gen">2025 model · in development</span></div>
+        <div class="spacer"></div>
+        <div class="tool">◫</div><div class="tool">⤢</div><div class="tool">⟲</div>
+        <div class="avatar"></div>
+      </div>
+      <div class="body">
+        <div class="rail">
+          <div class="ico on">▤</div><div class="ico">◯</div><div class="ico">╱</div>
+          <div class="ico">⬚</div><div class="ico">△</div>
+        </div>
+
+        <div class="viewport">
+          <div class="vp-label">viewport · front suspension mount flange</div>
+          <div class="diffchip"><span class="k">diff</span>Thickness 3.5 → 4.0 mm</div>
+          <svg width="360" height="360" viewBox="0 0 360 360">
+            <circle cx="180" cy="180" r="120" fill="none" stroke="#4a535f" stroke-width="1.5"/>
+            <circle cx="180" cy="180" r="52" fill="none" stroke="#4a535f" stroke-width="1.5"/>
+            <circle cx="180" cy="70"  r="10" fill="none" stroke="#4a535f" stroke-width="1.5"/>
+            <circle cx="180" cy="290" r="10" fill="none" stroke="#4a535f" stroke-width="1.5"/>
+            <circle cx="70"  cy="180" r="10" fill="none" stroke="#4a535f" stroke-width="1.5"/>
+            <circle cx="290" cy="180" r="10" fill="none" stroke="#4a535f" stroke-width="1.5"/>
+            <line x1="300" y1="180" x2="345" y2="180" stroke="#6b7681" stroke-width="1"/>
+            <text x="322" y="172" fill="#838b95" font-family="monospace" font-size="11" text-anchor="middle">R3</text>
+            <line x1="180" y1="60" x2="180" y2="20" stroke="#6b7681" stroke-width="1"/>
+            <text x="180" y="15" fill="#838b95" font-family="monospace" font-size="11" text-anchor="middle">t 4.0</text>
+          </svg>
+        </div>
+
+        <div class="assist">
+          <div class="head"><span class="dot"></span> Assistant <span class="state">S3b · reason</span></div>
+          <div class="stream">
+            <div class="diffchip" style="position:static;align-self:flex-start;">
+              <span class="k">change</span>Thickness 3.5 → 4.0 mm
+            </div>
+            <div class="bubble">
+              <div class="who">AI · reason capture</div>
+              Why this change? Pick the closest reason and I'll log it as △.
+            </div>
+            <div class="opt sel"><span class="radio"></span><div>Insufficient strength <div class="sub">FEM stress concentration</div></div></div>
+            <div class="opt"><span class="radio"></span><div>Weight reduction</div></div>
+            <div class="opt"><span class="radio"></span><div>Manufacturability</div></div>
+            <div class="opt"><span class="radio"></span><div>Other…</div></div>
+            <div class="btns">
+              <div class="btn primary">Confirm △</div>
+              <div class="btn ghost">Edit</div>
+            </div>
+          </div>
+          <div class="foot"><div class="inputbox">Ask about this part…</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ フレーム2：アシスタントのステート遷移 ============ -->
+  <div class="frame">
+    <div class="cap">// FRAME 2 — assistant panel states（S0 → S1 → S2）</div>
+    <div class="states">
+      <div class="mini">
+        <div class="mhead"><span class="dot d-ai"></span> S0 · Idle</div>
+        <div class="mbody">
+          <div class="ctx">
+            <div class="row"><span>PART</span><span>FLG-SUS-001-C</span></div>
+            <div class="row"><span>REVISIONS</span><span>△1 · △2 (editing)</span></div>
+            <div class="row"><span>RECURRENCE</span><span>1 flagged</span></div>
+          </div>
+          <div class="msg ai">Watching for changes…</div>
+          <div class="msg">You can also ask: “any similar past cases?”</div>
+          <div style="flex:1"></div>
+          <div class="inputbox">Ask about this part…</div>
+        </div>
+      </div>
+
+      <div class="mini">
+        <div class="mhead"><span class="dot d-ai"></span> S1 · Change detected</div>
+        <div class="mbody">
+          <div class="diffchip" style="position:static;align-self:flex-start;">
+            <span class="k">change</span>Thickness 3.5 → 4.0 mm
+          </div>
+          <div class="msg ai">Change captured on save.</div>
+          <div class="msg">Checking Company Brain for related △…</div>
+        </div>
+      </div>
+
+      <div class="mini">
+        <div class="mhead"><span class="dot d-ai"></span> S2 · Analyzing</div>
+        <div class="mbody">
+          <div class="analyzing"><span>Matching past △</span><span class="bar"></span></div>
+          <div class="msg">· category · part region · operation</div>
+          <div class="msg">→ branches to warning (A) or reason (B)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ フレーム3：ブロッキングモーダル（分岐A） ============ -->
+  <div class="frame">
+    <div class="cap">// FRAME 3 — S3a risk warning · blocking modal（デモの核心）</div>
+    <div class="app modal-frame">
+      <div class="topbar">
+        <div class="logo"></div>
+        <div class="part">FLG-SUS-001-C <span class="gen">2025 model · editing △2</span></div>
+        <div class="spacer"></div>
+        <div class="tool">◫</div><div class="tool">⤢</div><div class="avatar"></div>
+      </div>
+      <div class="body" style="height:420px;">
+        <div class="rail">
+          <div class="ico">▤</div><div class="ico on">╱</div><div class="ico">⬚</div><div class="ico">△</div>
+        </div>
+        <div class="viewport"><div class="vp-label">viewport · editing R5 → R3</div></div>
+        <div class="modal-scrim">
+          <div class="modal">
+            <div class="mh">
+              <div class="badge">!</div>
+              <div class="t">Risky change detected<div class="sub">R fillet · R5 → R3</div></div>
+            </div>
+            <div class="mc">
+              <p>Reducing the R fillet has failed before on this part.</p>
+              <div class="evi">
+                <div class="h">PAST △ · same operation</div>
+                <div class="line"><b>2015 △2</b> R5 → R3 → stiffness dropped</div>
+                <div class="line"><b>2015 △3</b> rib added — rework</div>
+              </div>
+              <div class="rec">
+                <div class="h">RECOMMENDED INSTEAD</div>
+                <div class="line">Add a relief shape (succeeded in 2020 △3), not an R reduction.</div>
+              </div>
+            </div>
+            <div class="ma">
+              <div class="btn solid-ok">Apply recommendation</div>
+              <div class="btn danger">Proceed anyway</div>
+              <div class="btn ghost">Ask 佐藤</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>AI / confirm</span>
+    <span><span class="sw" style="background:var(--danger)"></span>risk warning</span>
+    <span><span class="sw" style="background:var(--ok)"></span>recorded / recommended</span>
+  </div>
+
+</body>
+</html>
