@@ -36,7 +36,7 @@ flowchart TB
         DRAFT["Draft lesson<br/>(structured, predicate attached)"]
         LESSON["Approved lesson — gbrain<br/>predicate AST · provenance · applicability · lifecycle"]
         SRC -->|"LLM compiler"| DRAFT
-        DRAFT -->|"human approval gate<br/>(scoping + consolidation)"| LESSON
+        DRAFT -->|"calibrated approval<br/>human at bootstrap → AI-automated<br/>as outcome data accrues"| LESSON
     end
 
     subgraph DP["DESIGN-TIME PLANE — seconds · agent via MCP"]
@@ -60,8 +60,9 @@ flowchart TB
     TEL -.-> LESSON
 ```
 
-No LLM sits on the path to a hard warning: the upper plane compiles (humans
-approve), the lower plane decides with predicates. The flywheel loops design
+No LLM sits on the runtime path to a hard warning: the upper plane compiles and
+certifies (human-certified at bootstrap, AI-certified as outcome data proves
+calibration), the lower plane decides with predicates. The flywheel loops design
 activity back into the knowledge plane — that is what keeps the map alive.
 
 ---
@@ -191,10 +192,17 @@ raw documents ──→ [LLM extraction] ──→ draft lesson ──→ [human
    ("△1 thickness +2mm for strength") point to the richer documents where causal
    knowledge lives. We compile the documents; the △ anchors them to geometry and
    generations.
-3. **Human approval gate.** A lesson's predicate must be approved by a senior
-   engineer before it can hard-interrupt anyone. AI proposes; humans certify. This
-   is our structural answer to false-positive risk — and the review cost is minutes
-   per lesson, not authorship from scratch. The same gate handles **consolidation**:
+3. **Calibrated approval gate — human at bootstrap, automated by design.** A
+   lesson's predicate must be approved before it can hard-interrupt anyone. At
+   bootstrap the approver is a senior engineer (the review cost is minutes per
+   pre-structured lesson) — but the gate is explicitly **transitional, not
+   permanent**. Every approval decision and every warning outcome (§5) is training
+   data for the approval function itself: once a lesson class demonstrates
+   sustained precision in production (low dismissal rate, no overrides), new
+   lessons in that class are **auto-approved by AI**, and humans retreat to novel
+   and high-severity classes. The endgame is an approver that has seen every
+   outcome of every past approval — something no single human reviewer can match.
+   The same gate handles **consolidation**:
    draft lessons sharing a dedup key (`part_family × region_type × operation`) are
    presented as merge candidates, and contradictions are resolved by superseding the
    older lesson (§2 lifecycle) — so the brain converges instead of accumulating
@@ -386,8 +394,11 @@ warning moment, the compiler, and the flywheel all execute end-to-end today.
 3. **Honest about messy reality.** Tiered extraction assumes real factories have
    both parametric models and stitched-surface legacy data — and degrades warning
    strength instead of guessing.
-4. **Humans certify what interrupts humans.** AI compiles at near-zero cost; a
-   senior engineer approves in minutes. Quality control is a feature, not overhead.
+4. **Certification is earned, then automated.** At bootstrap, humans certify what
+   interrupts humans — quality control while the system has no track record. As
+   outcome telemetry accumulates, approval automates class by class, because the AI
+   approver has seen every consequence of every past approval — something no single
+   human reviewer can match. The gate's cost trends to zero; its guarantee does not.
 5. **The team lives this problem.** We work inside a major automotive OEM; the
    recurrence chain in our demo data mirrors what we see at work.
 
