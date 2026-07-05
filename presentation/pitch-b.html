@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SenpAI — Pitch Deck</title>
+<style>
+  /* ============================================================
+     SenpAI pitch deck — c0mpiled AI Hackathon
+     Aesthetic: engineering drawing / drafting table.
+     Self-contained: system fonts only, no CDNs, works offline.
+     Navigation: ← → / Space / PgUp PgDn / Home End / click edges.
+     ============================================================ */
+  :root {
+    --ink:        #f2efe8;   /* off-white drafting ink */
+    --ink-dim:    #b9b3a6;
+    --ink-faint:  #6f6a5f;
+    --paper:      #0d0f12;   /* near-black drafting table */
+    --paper-2:    #14171c;
+    --line:       #2b2f36;   /* hairline drawing frame */
+    --amber:      #ffb224;   /* safety amber = △ warning */
+    --amber-dim:  #8a6320;
+    --red:        #ff5d47;   /* recurrence / failure */
+    --green:      #58d68d;   /* resolved / flywheel growth */
+    --blue:       #6fb7ff;   /* references, quotes */
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: "Avenir Next", "Helvetica Neue", Helvetica, "Segoe UI", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    /* faint drafting grid */
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 88px 88px;
+    background-position: center center;
+  }
+
+  /* ---------- slide shell ---------- */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    padding: 4.2vh 5vw 8.5vh;
+    background: radial-gradient(120% 120% at 50% 0%, rgba(20,23,28,.55) 0%, rgba(13,15,18,.92) 70%);
+  }
+  .slide.active { display: flex; animation: reveal .45s ease-out both; }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* drawing frame */
+  .slide::before {
+    content: "";
+    position: absolute;
+    inset: 2.2vh 1.6vw;
+    border: 1px solid var(--line);
+    pointer-events: none;
+  }
+  /* title-block corner tick, like a drawing sheet */
+  .slide::after {
+    content: "FLG-SUS-001 · SHEET " attr(data-sheet);
+    position: absolute;
+    right: 2.4vw; bottom: 3.1vh;
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .14em;
+    color: var(--ink-faint);
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: clamp(.8rem, 1.4vw, 1.05rem);
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 2.6vh;
+  }
+  .kicker .n { color: var(--ink-faint); margin-right: 1.2em; }
+
+  h1 { font-size: clamp(3rem, 7.4vw, 6.2rem); font-weight: 700; line-height: 1.02; letter-spacing: -.015em; }
+  h2 { font-size: clamp(2rem, 4.4vw, 3.6rem); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; margin-bottom: 3.2vh; }
+  h2 em { color: var(--amber); font-style: normal; }
+  h2 .bad { color: var(--red); }
+  p, li { font-size: clamp(1.05rem, 1.85vw, 1.5rem); line-height: 1.55; color: var(--ink-dim); }
+  strong { color: var(--ink); font-weight: 600; }
+  .mono { font-family: var(--mono); }
+  .amber { color: var(--amber); }
+  .red { color: var(--red); }
+  .green { color: var(--green); }
+  .blue { color: var(--blue); }
+
+  .body { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+  .cols { display: flex; gap: 3.4vw; align-items: stretch; }
+  .cols > div { flex: 1; min-width: 0; }
+
+  .footnote {
+    margin-top: 3vh;
+    font-family: var(--mono);
+    font-size: clamp(.8rem, 1.25vw, 1.02rem);
+    color: var(--ink-faint);
+    letter-spacing: .04em;
+  }
+
+  /* ---------- cards / panels ---------- */
+  .panel {
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    padding: 2.4vh 1.6vw;
+  }
+  .panel h3 {
+    font-family: var(--mono);
+    font-size: clamp(.85rem, 1.3vw, 1.05rem);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1.6vh;
+  }
+  .panel ul { list-style: none; }
+  .panel li { padding: .55vh 0 .55vh 1.4em; position: relative; }
+  .panel li::before {
+    content: "—"; position: absolute; left: 0; color: var(--amber-dim);
+  }
+
+  /* ---------- timeline (problem slide) ---------- */
+  .timeline { display: flex; gap: 2vw; align-items: stretch; }
+  .era {
+    flex: 1;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    padding: 2.2vh 1.4vw;
+    position: relative;
+  }
+  .era.failed { border-color: var(--red); box-shadow: 0 0 0 1px rgba(255,93,71,.25), 0 14px 40px rgba(255,93,71,.07); }
+  .era.now { border-color: var(--amber); box-shadow: 0 0 0 1px rgba(255,178,36,.3), 0 14px 40px rgba(255,178,36,.08); }
+  .era .year {
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+    font-weight: 700; color: var(--ink);
+    margin-bottom: .8vh;
+  }
+  .era .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: clamp(.7rem, 1.05vw, .88rem);
+    letter-spacing: .12em;
+    padding: .25em .7em;
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    margin-bottom: 1.4vh;
+  }
+  .era.failed .tag { border-color: var(--red); color: var(--red); }
+  .era.now .tag { border-color: var(--amber); color: var(--amber); }
+  .era p { font-size: clamp(.98rem, 1.55vw, 1.28rem); }
+  .era .rev { font-family: var(--mono); color: var(--amber); }
+  .arrow {
+    align-self: center;
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    color: var(--ink-faint);
+    flex: 0 0 auto;
+  }
+
+  /* ---------- big triangle motif ---------- */
+  .tri { color: var(--amber); font-style: normal; }
+
+  /* ---------- warning card mock (product slide) ---------- */
+  .warncard {
+    border: 1px solid var(--amber);
+    background: linear-gradient(180deg, rgba(255,178,36,.08), rgba(20,23,28,.9) 45%);
+    padding: 2.4vh 1.6vw;
+    box-shadow: 0 18px 60px rgba(255,178,36,.10);
+  }
+  .warncard .wc-head {
+    display: flex; align-items: center; gap: .7em;
+    font-family: var(--mono);
+    font-size: clamp(.95rem, 1.5vw, 1.2rem);
+    letter-spacing: .1em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 1.6vh;
+  }
+  .warncard p { font-size: clamp(.98rem, 1.5vw, 1.24rem); margin-bottom: 1.1vh; }
+  .warncard .src { font-family: var(--mono); font-size: clamp(.8rem, 1.2vw, 1rem); color: var(--ink-faint); }
+  .wc-btn {
+    display: inline-block;
+    margin-top: 1.2vh;
+    font-family: var(--mono);
+    font-size: clamp(.85rem, 1.3vw, 1.05rem);
+    padding: .5em 1.1em;
+    border: 1px solid var(--green);
+    color: var(--green);
+    letter-spacing: .06em;
+  }
+
+  /* ---------- pipeline (technology slide) ---------- */
+  .pipe { display: flex; gap: 1.2vw; align-items: stretch; }
+  .stage {
+    flex: 1;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    padding: 2vh 1.2vw;
+  }
+  .stage .st-label {
+    font-family: var(--mono);
+    font-size: clamp(.72rem, 1.1vw, .9rem);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1vh;
+  }
+  .stage .st-title {
+    font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+    font-weight: 600; color: var(--ink);
+    margin-bottom: 1vh;
+  }
+  .stage p { font-size: clamp(.88rem, 1.35vw, 1.12rem); }
+  .stage.llm { border-color: var(--blue); }
+  .stage.llm .st-label { color: var(--blue); }
+  .stage.det { border-color: var(--amber); }
+  .stage.det .st-label { color: var(--amber); }
+  .pipe .arrow { font-size: clamp(1.3rem, 2.2vw, 2rem); }
+
+  code.j {
+    display: block;
+    font-family: var(--mono);
+    font-size: clamp(.78rem, 1.2vw, 1rem);
+    line-height: 1.6;
+    color: var(--green);
+    background: #0a0c0f;
+    border: 1px solid var(--line);
+    padding: 1.4vh 1vw;
+    margin-top: 1.2vh;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* ---------- comparison table (moat slide) ---------- */
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 1.3vh 1vw;
+    text-align: left;
+    font-size: clamp(.92rem, 1.5vw, 1.28rem);
+    color: var(--ink-dim);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: clamp(.78rem, 1.2vw, 1rem);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--paper-2);
+  }
+  tr.hero td { color: var(--ink); background: rgba(255,178,36,.06); border-color: var(--amber-dim); }
+  td .yes { color: var(--green); font-family: var(--mono); }
+  td .no  { color: var(--red);   font-family: var(--mono); }
+
+  /* ---------- beat table (demo slide) ---------- */
+  .beats { width: 100%; }
+  .beats td:first-child {
+    font-family: var(--mono);
+    color: var(--amber);
+    white-space: nowrap;
+    width: 8ch;
+  }
+
+  /* ---------- market steps ---------- */
+  .steps { display: flex; gap: 1.6vw; align-items: flex-end; }
+  .step {
+    flex: 1;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    padding: 2vh 1.3vw;
+  }
+  .step:nth-child(1) { min-height: 24vh; border-color: var(--amber); }
+  .step:nth-child(2) { min-height: 32vh; }
+  .step:nth-child(3) { min-height: 40vh; }
+  .step .st-num {
+    font-family: var(--mono);
+    color: var(--ink-faint);
+    font-size: clamp(.75rem, 1.15vw, .95rem);
+    letter-spacing: .16em;
+    margin-bottom: 1vh;
+  }
+  .step .st-head {
+    font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+    font-weight: 600; color: var(--ink);
+    margin-bottom: 1vh;
+  }
+  .step p { font-size: clamp(.9rem, 1.4vw, 1.15rem); }
+
+  /* ---------- title slide ---------- */
+  .title-slide .body { align-items: flex-start; }
+  .brand {
+    display: flex; align-items: baseline; gap: 1.4vw;
+  }
+  .brand .glyph {
+    font-size: clamp(3.4rem, 8vw, 7rem);
+    color: var(--amber);
+    line-height: 1;
+    animation: pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .45; }
+  }
+  .tagline {
+    margin-top: 3vh;
+    font-size: clamp(1.4rem, 2.9vw, 2.4rem);
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 30ch;
+  }
+  .tagline .amber { font-weight: 600; }
+  .subline { margin-top: 2.4vh; font-size: clamp(1rem, 1.7vw, 1.35rem); color: var(--ink-dim); }
+
+  /* ---------- close slide ---------- */
+  .close-slide .body { align-items: center; text-align: center; }
+  .close-slide h2 { font-size: clamp(2.4rem, 5.4vw, 4.4rem); max-width: 22ch; }
+  .qr {
+    margin-top: 4vh;
+    width: clamp(140px, 18vh, 220px);
+    height: clamp(140px, 18vh, 220px);
+    border: 2px dashed var(--amber-dim);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: .6em;
+    font-family: var(--mono);
+    font-size: .85rem;
+    color: var(--ink-faint);
+    letter-spacing: .1em;
+  }
+
+  /* ---------- QA slide ---------- */
+  .qa { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.6vw; }
+  .qa .panel p { font-size: clamp(.9rem, 1.4vw, 1.16rem); }
+  .qa .q {
+    font-weight: 600; color: var(--ink);
+    margin-bottom: 1.2vh;
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
+  }
+
+  /* ---------- chrome: progress + counter + nav zones ---------- */
+  #progress {
+    position: fixed; left: 0; top: 0; height: 3px;
+    background: var(--amber); width: 0%;
+    transition: width .3s ease; z-index: 10;
+  }
+  #counter {
+    position: fixed; left: 2.4vw; bottom: 3.1vh;
+    font-family: var(--mono); font-size: .78rem;
+    letter-spacing: .18em; color: var(--ink-faint); z-index: 10;
+  }
+  .navzone {
+    position: fixed; top: 0; bottom: 0; width: 12vw;
+    z-index: 5; cursor: pointer;
+  }
+  #prevzone { left: 0; }
+  #nextzone { right: 0; }
+
+  .quote {
+    border-left: 3px solid var(--blue);
+    padding-left: 1.4vw;
+    margin: 2vh 0;
+  }
+  .quote p { color: var(--blue); font-size: clamp(1.05rem, 1.8vw, 1.45rem); font-style: italic; }
+  .quote .who { font-family: var(--mono); font-style: normal; font-size: clamp(.78rem, 1.2vw, .98rem); color: var(--ink-faint); margin-top: .6vh; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="counter">01 / 11</div>
+<div class="navzone" id="prevzone" title="Previous"></div>
+<div class="navzone" id="nextzone" title="Next"></div>
+
+<!-- ============ 1. TITLE ============ -->
+<section class="slide title-slide" data-sheet="01">
+  <div class="kicker"><span class="n">c0mpiled AI Hackathon · 2026</span>YC RFS — Company Brain</div>
+  <div class="body">
+    <div class="brand">
+      <span class="glyph">&#9651;</span>
+      <h1>SenpAI</h1>
+    </div>
+    <p class="tagline">The company brain that <span class="amber">stops you from repeating your company's mistakes.</span></p>
+    <p class="subline"><strong>senpai</strong> (先輩, your senior engineer) + <strong>AI</strong> — the senior who watches over your shoulder while you design.</p>
+    <p class="footnote">Built by a team working inside a major automotive OEM.</p>
+  </div>
+</section>
+
+<!-- ============ 2. PROBLEM: THE RECURRENCE ============ -->
+<section class="slide" data-sheet="02">
+  <div class="kicker"><span class="n">02</span>Problem</div>
+  <div class="body">
+    <h2>The same failure. <span class="bad">Three vehicle generations.</span></h2>
+    <div class="timeline">
+      <div class="era">
+        <div class="year">2015</div>
+        <div class="tag">LESSON LEARNED</div>
+        <p><span class="rev">&#9651;1</span> — FEM finds stress concentration at the fastening points. <strong>8&nbsp;mm plate thickness is insufficient</strong> &rarr; fixed to 10&nbsp;mm. Yamada writes the reason into the revision note.</p>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="era failed">
+        <div class="year">2020</div>
+        <div class="tag">IDENTICAL FAILURE</div>
+        <p><span class="rev">&#9651;1</span> — A different designer thins the plate back to 8&nbsp;mm for a &minus;2&nbsp;kg target. <span class="rev">&#9651;2</span> — <strong class="red">the exact same stress concentration.</strong> Rework. Lightweighting abandoned.</p>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="era now">
+        <div class="year">2025</div>
+        <div class="tag">HAPPENING NOW</div>
+        <p><span class="rev">&#9651;2</span> — A third designer is <strong>about to repeat 2015's fillet mistake</strong> (R5&rarr;R3) to dodge a battery bracket — the same edit that caused a rework loop ten years ago.</p>
+      </div>
+    </div>
+    <p class="footnote">Real pattern we observe inside a major automotive OEM where our team works. Part: front suspension mounting flange (synthetic demo data).</p>
+  </div>
+</section>
+
+<!-- ============ 3. PROBLEM: WHERE KNOWLEDGE HIDES ============ -->
+<section class="slide" data-sheet="03">
+  <div class="kicker"><span class="n">03</span>Problem — root cause</div>
+  <div class="body">
+    <h2>The lesson existed. <em>Nobody could query it.</em></h2>
+    <div class="cols">
+      <div class="panel">
+        <h3>Where design knowledge lives today</h3>
+        <ul>
+          <li>Excel trouble reports, PowerPoint design reviews, scanned PDFs</li>
+          <li>Veteran engineers' heads — <strong>and they are retiring</strong></li>
+          <li><strong class="amber">&#9651; revision histories inside CAD files</strong> — "&#9651;1: plate 8&rarr;10&nbsp;mm, stress concentration at fastening points"</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Why the &#9651; marks matter</h3>
+        <p style="padding:.4vh 0;">The &#9651; history is the <strong>densest failure record a company owns</strong> — written by the person who fixed the part, on the exact geometry that failed.</p>
+        <p style="padding:1vh 0 0;">And it has <strong class="red">never been queryable.</strong> It sits in drawings, invisible at the one moment it matters: while the next designer is editing.</p>
+      </div>
+    </div>
+    <p class="footnote">Search tools don't help — the designer doesn't know there is something to search for.</p>
+  </div>
+</section>
+
+<!-- ============ 4. PRODUCT ============ -->
+<section class="slide" data-sheet="04">
+  <div class="kicker"><span class="n">04</span>Product</div>
+  <div class="body">
+    <h2>SenpAI interrupts <em>at the moment of the mistake</em> — with evidence.</h2>
+    <div class="cols">
+      <div>
+        <div class="warncard">
+          <div class="wc-head"><span>&#9651;</span> SenpAI — design warning</div>
+          <p><strong>Reducing this fillet R5&rarr;R3 caused a failure before.</strong></p>
+          <p>2015 <span class="mono amber">&#9651;2</span> made this exact change &rarr; stiffness dropped &rarr; rework rib added in <span class="mono amber">&#9651;3</span>.</p>
+          <p>Recommended instead: <strong class="green">relief cutout</strong> — succeeded in 2020 <span class="mono amber">&#9651;3</span>.</p>
+          <p class="src">Source: Trouble Report FLG-2014-06 · Fixed by: Sato (Design) · Recurred: never after fix</p>
+          <span class="wc-btn">Apply relief cutout &rarr;</span>
+        </div>
+      </div>
+      <div>
+        <div class="panel" style="height:100%;">
+          <h3>What it is — and is not</h3>
+          <ul>
+            <li><strong>Not search.</strong> The designer never asks a question.</li>
+            <li><strong>Not a chatbot.</strong> It acts on the design operation itself.</li>
+            <li>A <strong>proactive agent</strong> that shows: which past &#9651;, which document, who fixed it, what it cost last time.</li>
+          </ul>
+          <div class="quote">
+            <p>"A living map of how a company works&hellip; executable skills files."</p>
+            <div class="who">— Y Combinator RFS, "Company Brain"</div>
+          </div>
+          <p style="font-size:clamp(.92rem,1.45vw,1.18rem);">We compile <strong>unformalized</strong> knowledge — &#9651; histories and trouble reports — into <strong>executable design checks</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. TECHNOLOGY ============ -->
+<section class="slide" data-sheet="05">
+  <div class="kicker"><span class="n">05</span>Technology</div>
+  <div class="body">
+    <h2>LLM compiles the knowledge. <em>Deterministic rules fire the warning.</em></h2>
+    <div class="pipe">
+      <div class="stage">
+        <div class="st-label">Input</div>
+        <div class="st-title">Unformalized knowledge</div>
+        <p>&#9651; revision notes, trouble reports, design-review PPTs — the stuff no tool reads today.</p>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="stage llm">
+        <div class="st-label">LLM — compile time</div>
+        <div class="st-title">Knowledge compiler</div>
+        <p>Report text &rarr; structured lesson. Shown <strong>live</strong> in the demo.</p>
+        <code class="j">{ "category": "interference",
+  "region": "fillet",
+  "operation": "R5→R3",
+  "outcome": "rework (△3)",
+  "source": "FLG-2014-06" }</code>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="stage det">
+        <div class="st-label">Deterministic — edit time</div>
+        <div class="st-title">Rule matching in CAD</div>
+        <p><strong>Zero hallucination. Under 2 seconds. Works offline.</strong> A wrong interruption kills trust — so the interrupt path contains no LLM at all.</p>
+      </div>
+    </div>
+    <p class="footnote">Demo: web 3D pseudo-CAD viewer. Production path: native add-ins — CATIA, NX and SolidWorks all expose add-in APIs. LLM is also used for the one-tap flywheel question (next slide).</p>
+  </div>
+</section>
+
+<!-- ============ 6. MOAT / FLYWHEEL ============ -->
+<section class="slide" data-sheet="06">
+  <div class="kicker"><span class="n">06</span>Moat — data flywheel</div>
+  <div class="body">
+    <h2>Every accepted change <em>grows the brain.</em></h2>
+    <div class="cols">
+      <div>
+        <div class="panel">
+          <h3>The write path</h3>
+          <ul>
+            <li>Designer accepts a change &rarr; SenpAI asks <strong>one tap</strong>: <span class="amber">"Was this for strength?"</span></li>
+            <li>The answer becomes a <strong class="green">structured lesson for the next vehicle generation</strong> — automatically.</li>
+            <li>The map stays alive: <strong>the more you design, the smarter it gets.</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <table>
+          <tr><th></th><th>Reads formalized docs</th><th>Reads &#9651; / unformalized</th><th>Writes at design time</th></tr>
+          <tr><td>CoLab AutoReview</td><td><span class="yes">yes</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
+          <tr><td>Leo AI</td><td><span class="yes">yes</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
+          <tr><td>CADDi</td><td><span class="yes">yes</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
+          <tr class="hero"><td><strong>SenpAI</strong></td><td><span class="yes">yes</span></td><td><span class="yes">yes</span></td><td><span class="yes">yes</span></td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="footnote">Existing tools only READ knowledge someone already formalized. None capture new knowledge at the moment it is created — the design edit itself.</p>
+  </div>
+</section>
+
+<!-- ============ 7. BUSINESS ============ -->
+<section class="slide" data-sheet="07">
+  <div class="kicker"><span class="n">07</span>Business</div>
+  <div class="body">
+    <h2>Land where we already work. <em>Price against one prevented failure.</em></h2>
+    <div class="cols">
+      <div class="panel">
+        <h3>Unfair advantage</h3>
+        <p style="padding:.4vh 0;">We work <strong>inside the OEM that has this problem.</strong> Insider problem resolution + a direct network into design departments and suppliers &mdash; the shortest path to a first PoC.</p>
+      </div>
+      <div class="panel">
+        <h3>Pricing logic</h3>
+        <p style="padding:.4vh 0;">Department-level SaaS (per designer / month). One prevented recurrence &mdash; <strong>rework hours + production delay</strong> &mdash; pays for the annual license. The 2020 flange failure alone would have.</p>
+      </div>
+      <div class="panel">
+        <h3>Expansion</h3>
+        <p style="padding:.4vh 0;">Same structure, new domains: <strong>design &rarr; process engineering &rarr; QA.</strong> The flywheel makes each customer's knowledge asset grow &mdash; switching cost compounds into the moat.</p>
+      </div>
+    </div>
+    <p class="footnote">Vision: the company brain for every factory in the world. OEM → automotive supply chain → all of manufacturing.</p>
+  </div>
+</section>
+
+<!-- ============ 8. MARKET ============ -->
+<section class="slide" data-sheet="08">
+  <div class="kicker"><span class="n">08</span>Market</div>
+  <div class="body">
+    <h2>A narrow wedge into <em>a problem every company has.</em></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="st-num">WEDGE — TODAY</div>
+        <div class="st-head">Design recurrence prevention in manufacturing</div>
+        <p>Concrete, measurable, painful: repeated failures cost rework months and abandoned targets. We start here because we can win here.</p>
+      </div>
+      <div class="step">
+        <div class="st-num">TAILWIND — NOW</div>
+        <div class="st-head">The veteran retirement time bomb</div>
+        <p>Japanese manufacturing is losing its most experienced engineers to retirement. Their knowledge leaves in heads and unread &#9651; notes — a structural deadline, not a trend.</p>
+      </div>
+      <div class="step">
+        <div class="st-num">SCALE — NEXT</div>
+        <div class="st-head">"Every company will need one"</div>
+        <p>YC's Company Brain RFS says every company will need a living map of how it works. Manufacturing design is the hardest, highest-value place to prove it — win here and the pattern generalizes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. DEMO — 90 SECONDS ============ -->
+<section class="slide" data-sheet="09">
+  <div class="kicker"><span class="n">09</span>Demo — 90 seconds, live</div>
+  <div class="body">
+    <h2>Watch the brain <em>catch a 10-year-old mistake.</em></h2>
+    <table class="beats">
+      <tr><th>Time</th><th>Beat</th><th>On screen</th></tr>
+      <tr>
+        <td>0&ndash;15s</td>
+        <td><strong>Problem.</strong> "A lesson learned in 2015 recurred in 2020. The knowledge sleeps inside the drawing's &#9651; marks."</td>
+        <td>Cross-generation recurrence chain of the flange part</td>
+      </tr>
+      <tr>
+        <td>15&ndash;40s</td>
+        <td><strong class="amber">The warning moment.</strong> On the 2025 model we edit the fillet R5&rarr;R3 — SenpAI interrupts with the 2015 evidence, in under 2 seconds.</td>
+        <td>3D viewer + SenpAI warning card</td>
+      </tr>
+      <tr>
+        <td>40&ndash;60s</td>
+        <td><strong class="blue">The compiler.</strong> Paste a raw trouble report — watch it become a structured lesson, live.</td>
+        <td>Report text &rarr; lesson JSON extraction</td>
+      </tr>
+      <tr>
+        <td>60&ndash;80s</td>
+        <td><strong class="green">The flywheel.</strong> One click applies the recommended relief cutout &rarr; "Was this to avoid interference?" &rarr; Yes &rarr; a new node appears in the knowledge graph.</td>
+        <td>Knowledge graph grows on screen</td>
+      </tr>
+      <tr>
+        <td>80&ndash;90s</td>
+        <td><strong>Close.</strong> "The more you design, the smarter the brain gets. Every factory needs this brain."</td>
+        <td>Live URL + QR code</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 10. CLOSE ============ -->
+<section class="slide close-slide" data-sheet="10">
+  <div class="kicker"><span class="n">10</span>SenpAI</div>
+  <div class="body">
+    <h2>The more you design, <em>the smarter the brain gets.</em></h2>
+    <p style="margin-top:2vh; font-size:clamp(1.3rem,2.4vw,2rem); color:var(--ink);">Every factory needs this brain.</p>
+    <div class="qr">
+      <span style="font-size:2rem; color:var(--amber);">&#9651;</span>
+      <span>QR — LIVE DEMO</span>
+      <span>(placeholder)</span>
+    </div>
+    <p class="footnote">Try it yourself — the demo is live in your browser.</p>
+  </div>
+</section>
+
+<!-- ============ 11. ANTICIPATED Q&A (appendix) ============ -->
+<section class="slide" data-sheet="11">
+  <div class="kicker"><span class="n">11</span>Appendix — anticipated Q&amp;A</div>
+  <div class="body">
+    <h2>Three questions we expect.</h2>
+    <div class="qa">
+      <div class="panel">
+        <p class="q">How is this different from Glean / CoLab / CADDi?</p>
+        <p>They index knowledge someone <strong>already formalized</strong> — standards, documents, drawings — and they only <strong>read</strong>. We compile <strong>unformalized</strong> knowledge (&#9651; notes, trouble reports) into executable checks, and we <strong>write</strong> new knowledge at design time via the flywheel. LLMs made the unformalized&rarr;executable conversion possible for the first time — that's the opening.</p>
+      </div>
+      <div class="panel">
+        <p class="q">Can it integrate with real CAD?</p>
+        <p>Yes — that is the production path. CATIA, NX and SolidWorks all expose add-in APIs that see edit events, which is exactly the hook SenpAI needs. Today's web 3D viewer exists so judges can touch the experience in a browser; the interrupt logic is CAD-agnostic and deterministic.</p>
+      </div>
+      <div class="panel">
+        <p class="q">Where does the data come from?</p>
+        <p>Three sources the customer already owns: <strong>&#9651; revision histories</strong> in drawings (link keys), the <strong>trouble reports and review PPTs</strong> they point to (knowledge body), and — going forward — <strong>designers' one-tap confirmations</strong> captured at edit time. Today's demo runs on synthetic data modeled on real recurrence patterns; no confidential data is used.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var counter = document.getElementById('counter');
+    var progress = document.getElementById('progress');
+    var idx = 0;
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+    function show(i) {
+      idx = Math.max(0, Math.min(slides.length - 1, i));
+      slides.forEach(function (s, k) { s.classList.toggle('active', k === idx); });
+      counter.textContent = pad(idx + 1) + ' / ' + pad(slides.length);
+      progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+      if (history.replaceState) history.replaceState(null, '', '#' + (idx + 1));
+    }
+
+    function next() { show(idx + 1); }
+    function prev() { show(idx - 1); }
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown': case 'Enter':
+          e.preventDefault(); next(); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'Backspace':
+          e.preventDefault(); prev(); break;
+        case 'Home': e.preventDefault(); show(0); break;
+        case 'End': e.preventDefault(); show(slides.length - 1); break;
+      }
+    });
+
+    document.getElementById('nextzone').addEventListener('click', next);
+    document.getElementById('prevzone').addEventListener('click', prev);
+
+    var fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+    show(isNaN(fromHash) ? 0 : fromHash - 1);
+  })();
+</script>
+
+</body>
+</html>

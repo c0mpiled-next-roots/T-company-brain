@@ -1,0 +1,191 @@
+{
+  "part": {
+    "name": "フロントサスペンション マウントフランジ",
+    "series": "FLG-SUS-001",
+    "generations": [
+      { "id": "A", "model_year": 2015, "part_no": "FLG-SUS-001-A", "status": "量産済 (2015-02)" },
+      { "id": "B", "model_year": 2020, "part_no": "FLG-SUS-001-B", "status": "量産済 (2020-01)" },
+      { "id": "C", "model_year": 2025, "part_no": "FLG-SUS-001-C", "status": "開発中" }
+    ]
+  },
+  "lessons": [
+    {
+      "id": "L-2015-1",
+      "category": "強度不足",
+      "region": "締結部",
+      "operation": "板厚変更",
+      "parameter": "板厚",
+      "threshold": "板厚 >= 10mm",
+      "outcome": "FEM解析で締結部に応力集中。板厚8→10mmで解消(重量+120g)",
+      "source_doc": "強度検討報告書 FLG-2014-06",
+      "source_rev": "2015モデル △1",
+      "author": "山田(設計)",
+      "year": 2014,
+      "generation": "A"
+    },
+    {
+      "id": "L-2015-2",
+      "category": "干渉",
+      "region": "R部",
+      "operation": "Rダラし",
+      "parameter": "フィレット半径",
+      "threshold": "R5→R3 は剛性低下を誘発",
+      "outcome": "隣接ブラケット干渉回避でR5→R3としたが剛性低下、△3のリブ追加を誘発(手戻り)",
+      "source_doc": "設計変更連絡書 FLG-2014-09",
+      "source_rev": "2015モデル △2",
+      "author": "佐藤(設計)",
+      "year": 2014,
+      "generation": "A"
+    },
+    {
+      "id": "L-2015-3",
+      "category": "強度不足",
+      "region": "R部",
+      "operation": "リブ追加",
+      "parameter": "リブ",
+      "threshold": "Rダラし時はリブ補強または逃がし形状を検討",
+      "outcome": "△2のRダラしによる剛性低下をリブ追加で解消(△2の手戻り)",
+      "source_doc": "対策検討会議事録 FLG-2014-11",
+      "source_rev": "2015モデル △3",
+      "author": "山田(設計)",
+      "year": 2014,
+      "generation": "A"
+    },
+    {
+      "id": "L-2015-4",
+      "category": "加工性",
+      "region": "ボルト穴",
+      "operation": "穴位置変更",
+      "parameter": "穴位置",
+      "threshold": "溶接トーチのアクセス確保(5mm以上のオフセット)",
+      "outcome": "溶接トーチが入らず溶接性NG。穴位置5mmオフセットで解消(治具変更を伴う)",
+      "source_doc": "生技フィードバック票 FLG-2015-01",
+      "source_rev": "2015モデル △4",
+      "author": "田中(生技)",
+      "year": 2015,
+      "generation": "A"
+    },
+    {
+      "id": "L-2020-1",
+      "category": "軽量化",
+      "region": "締結部",
+      "operation": "板厚変更",
+      "parameter": "板厚",
+      "threshold": null,
+      "outcome": "車両軽量化目標(-2kg)のため板厚10→8mm。過去知見(L-2015-1)未参照のまま実施",
+      "source_doc": "軽量化検討書 FLG-2019-07",
+      "source_rev": "2020モデル △1",
+      "author": "鈴木(設計)",
+      "year": 2019,
+      "generation": "B"
+    },
+    {
+      "id": "L-2020-2",
+      "category": "強度不足",
+      "region": "締結部",
+      "operation": "板厚変更",
+      "parameter": "板厚",
+      "threshold": "板厚 >= 10mm",
+      "outcome": "★2015 △1と同一の失敗が再発。締結部応力集中で8→10mmに戻し、軽量化断念(手戻り)",
+      "source_doc": "不具合報告書 FLG-2019-10",
+      "source_rev": "2020モデル △2",
+      "author": "鈴木(設計)",
+      "year": 2019,
+      "generation": "B",
+      "recurrence_of": "L-2015-1"
+    },
+    {
+      "id": "L-2020-3",
+      "category": "干渉",
+      "region": "R部",
+      "operation": "逃がし形状追加",
+      "parameter": "逃がし形状",
+      "threshold": "干渉回避はRダラしではなく逃がし形状で行う",
+      "outcome": "隣接ワイヤハーネス干渉を逃がし形状追加で解消。剛性低下なし(Rダラしの正しい代替)",
+      "source_doc": "設計変更連絡書 FLG-2019-12",
+      "source_rev": "2020モデル △3",
+      "author": "佐藤(設計)",
+      "year": 2019,
+      "generation": "B"
+    },
+    {
+      "id": "L-2025-1",
+      "category": "材料変更",
+      "region": "全体",
+      "operation": "材質変更",
+      "parameter": "材質",
+      "threshold": "鋼→アルミ変更時は剛性・締結部の再評価必須",
+      "outcome": "EV化軽量化要求で鋼→アルミ+板厚見直し。剛性再評価中",
+      "source_doc": "材料変更検討書 FLG-2024-08",
+      "source_rev": "2025モデル △1",
+      "author": "高橋(設計)",
+      "year": 2024,
+      "generation": "C"
+    },
+    {
+      "id": "L-GEN-1",
+      "category": "加工性",
+      "region": "溶接部",
+      "operation": "形状変更",
+      "parameter": "クリアランス",
+      "threshold": "溶接トーチ アクセス 15mm 以上",
+      "outcome": "トーチアクセス不足は治具変更・工程追加のコスト増につながる(社内標準 W-STD-07)",
+      "source_doc": "溶接標準 W-STD-07",
+      "source_rev": null,
+      "author": "生技標準G",
+      "year": 2018,
+      "generation": null
+    },
+    {
+      "id": "L-GEN-2",
+      "category": "強度不足",
+      "region": "ボルト穴",
+      "operation": "穴位置変更",
+      "parameter": "縁距離",
+      "threshold": "縁距離 >= 1.5d",
+      "outcome": "縁距離不足はへり割れの原因。過去に足回り部品で市場不具合1件",
+      "source_doc": "設計標準 D-STD-12",
+      "source_rev": null,
+      "author": "設計標準G",
+      "year": 2016,
+      "generation": null
+    },
+    {
+      "id": "L-GEN-3",
+      "category": "材料変更",
+      "region": "締結部",
+      "operation": "材質変更",
+      "parameter": "ヤング率",
+      "threshold": "アルミ化時は板厚1.4倍を初期値に",
+      "outcome": "鋼→アルミ置換で同板厚のままだと剛性不足。初期検討の目安として板厚1.4倍",
+      "source_doc": "軽量化設計ガイド LW-2022",
+      "source_rev": null,
+      "author": "材料技術部",
+      "year": 2022,
+      "generation": null
+    }
+  ],
+  "rules": [
+    {
+      "id": "R1",
+      "title": "板厚不足の再発リスク",
+      "trigger": { "parameter": "thickness", "op": "lt", "value": 10 },
+      "severity": "high",
+      "evidence": ["L-2015-1", "L-2020-2"],
+      "senpai_text": "ちょっと待ってください。この部位の板厚を10mm未満にするのは危険です。2014年にFEM解析で締結部の応力集中が検出され、山田さんが8→10mmに上げた経緯があります(2015年モデル △1)。さらに2019年、軽量化のために8mmへ戻して全く同じ強度不足が再発し、手戻りの末に軽量化を断念しています(2020年モデル △2、担当: 鈴木さん)。同じ失敗を3度目にしないでください。",
+      "recommendation": "板厚は10mm以上を維持。軽量化が必要なら材質変更(L-GEN-3: アルミ化+板厚1.4倍)を検討",
+      "ask_person": "山田さん(2015 △1 担当)"
+    },
+    {
+      "id": "R2",
+      "title": "Rダラしによる剛性低下の再発リスク",
+      "trigger": { "parameter": "fillet", "op": "change", "from": 5, "to": 3 },
+      "severity": "high",
+      "evidence": ["L-2015-2", "L-2015-3", "L-2020-3"],
+      "senpai_text": "そのRのダラし(R5→R3)、過去に問題を起こしています。2014年に隣接ブラケットとの干渉回避で同じ変更をした結果、剛性が低下して△3でリブ追加の手戻りが発生しました(2015年モデル △2→△3)。干渉回避が目的なら、ダラしではなく逃がし形状の追加を推奨します。2019年にワイヤハーネス干渉を同じ手法で解決した成功例があります(2020年モデル △3、担当: 佐藤さん)。",
+      "recommendation": "R5は維持し、干渉部位に逃がし形状を追加する(2020 △3 の成功パターン)",
+      "action": { "type": "relief", "label": "逃がし形状を適用" },
+      "ask_person": "佐藤さん(2015 △2 / 2020 △3 担当)"
+    }
+  ]
+}

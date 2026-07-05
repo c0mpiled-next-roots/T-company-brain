@@ -1,0 +1,176 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-2: #1c2333;
+  --border: #2d3748;
+  --text: #e6edf3;
+  --muted: #8b98a9;
+  --accent: #58a6ff;
+  --warn: #f0883e;
+  --danger: #f85149;
+  --ok: #3fb950;
+  --senpai: #ffd866;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── ヘッダー ─────────────────────────── */
+#topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.brand-mark { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+.brand-mark .ai { color: var(--accent); }
+.brand-sub { display: block; font-size: 10px; color: var(--muted); }
+.part-info { flex: 1; }
+.part-name { font-weight: 600; margin-right: 10px; }
+.part-no { color: var(--muted); font-size: 12px; }
+.scenes { display: flex; align-items: center; gap: 12px; }
+.scene-btn {
+  background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 12px; cursor: pointer; font-size: 13px;
+}
+.scene-btn:hover { border-color: var(--accent); }
+.brain-count { font-size: 14px; color: var(--senpai); }
+
+/* ── レイアウト ───────────────────────── */
+#layout { flex: 1; display: flex; min-height: 0; }
+#viewer-pane { flex: 1.6; position: relative; min-width: 0; }
+#viewer { position: absolute; inset: 0; }
+#graph-pane {
+  flex: 1; display: flex; flex-direction: column;
+  border-left: 1px solid var(--border); background: var(--panel);
+  min-width: 320px;
+}
+.pane-title { padding: 10px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--border); }
+#graph { flex: 1; min-height: 0; }
+.legend {
+  display: flex; gap: 14px; padding: 8px 14px; font-size: 11px; color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+.dot.part { background: #58a6ff; } .dot.gen { background: #8b98a9; }
+.dot.rev { background: #f0883e; } .dot.doc { background: #3fb950; }
+.dot.person { background: #d2a8ff; }
+
+/* ── 操作パネル ───────────────────────── */
+#controls {
+  position: absolute; top: 14px; left: 14px; z-index: 5;
+  background: rgba(22, 27, 34, 0.92); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; width: 260px;
+  backdrop-filter: blur(4px);
+}
+.control { margin-bottom: 12px; }
+.control:last-child { margin-bottom: 0; }
+.control label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.control label b { color: var(--text); font-size: 14px; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; gap: 6px; }
+.seg-btn {
+  flex: 1; padding: 6px 0; background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+}
+.seg-btn.active { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.hint { font-size: 11px; color: var(--warn); }
+
+/* ── 先輩カード ───────────────────────── */
+#senpai-card {
+  position: absolute; bottom: 18px; left: 14px; right: 14px; z-index: 10;
+  max-width: 640px;
+  background: linear-gradient(180deg, #2a2417, #1f1c12);
+  border: 1.5px solid var(--senpai);
+  border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  animation: senpai-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+@keyframes senpai-in {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.senpai-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.senpai-avatar { font-size: 26px; }
+.senpai-title { flex: 1; font-weight: 700; color: var(--senpai); }
+#senpai-text { font-size: 13.5px; line-height: 1.75; }
+.evidence { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.evidence .chip {
+  font-size: 11px; padding: 3px 9px; border-radius: 999px;
+  background: rgba(240, 136, 62, 0.15); border: 1px solid rgba(240, 136, 62, 0.5);
+  color: #ffb37e; cursor: default;
+}
+.evidence .chip.doc { background: rgba(63,185,80,0.12); border-color: rgba(63,185,80,0.5); color: #7ee2a8; }
+.senpai-actions { display: flex; gap: 10px; margin-top: 8px; }
+
+button.primary {
+  background: var(--accent); color: #06121f; font-weight: 700;
+  border: none; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-size: 13px;
+}
+button.primary:hover { filter: brightness(1.12); }
+button.ghost {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px;
+}
+button.ghost:hover { color: var(--text); }
+
+/* ── フライホイール ───────────────────── */
+#flywheel {
+  position: absolute; bottom: 18px; left: 14px; z-index: 11;
+  max-width: 520px;
+  background: linear-gradient(180deg, #12233a, #0e1a2b);
+  border: 1.5px solid var(--accent);
+  border-radius: 12px; padding: 16px;
+  animation: senpai-in 0.3s ease-out;
+}
+#flywheel-question { font-size: 14px; line-height: 1.7; margin-bottom: 4px; }
+
+/* ── トースト ─────────────────────────── */
+#toast {
+  position: absolute; top: 16px; right: 16px; z-index: 20;
+  background: rgba(63, 185, 80, 0.15); border: 1px solid var(--ok); color: #7ee2a8;
+  border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600;
+  animation: senpai-in 0.3s ease-out;
+}
+
+/* ── コンパイラモーダル ───────────────── */
+.modal {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+}
+.modal-box {
+  width: min(1080px, 94vw); height: min(640px, 88vh);
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  display: flex; flex-direction: column; padding: 16px;
+}
+.modal-head { display: flex; align-items: center; gap: 8px; font-size: 15px; margin-bottom: 12px; }
+.modal-head .ghost { margin-left: auto; }
+.compiler-cols { flex: 1; display: flex; gap: 14px; min-height: 0; }
+.col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.col-title { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+#compiler-input {
+  flex: 1; resize: none; background: var(--bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; padding: 12px;
+  font: 12.5px/1.7 "SF Mono", Menlo, monospace;
+}
+#compiler-output {
+  flex: 1; overflow: auto; background: #0a0f14; color: #a5d6ff;
+  border: 1px solid var(--border); border-radius: 8px; padding: 12px;
+  font: 12.5px/1.7 "SF Mono", Menlo, monospace; white-space: pre-wrap;
+}
+.modal-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+#compiler-status { font-size: 12px; color: var(--muted); }
+
+.hidden { display: none !important; }

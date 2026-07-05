@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SenpAI — 後ろで見てくれている先輩</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div class="brand">
+      <span class="brand-mark">Senp<span class="ai">AI</span></span>
+      <span class="brand-sub">The senior engineer watching over your shoulder</span>
+    </div>
+    <div class="part-info">
+      <span class="part-name">フロントサスペンション マウントフランジ</span>
+      <span class="part-no">FLG-SUS-001-C(2025年モデル・開発中)</span>
+    </div>
+    <nav class="scenes">
+      <button id="btn-compiler" class="scene-btn">⚙ 知識コンパイラ</button>
+      <span id="brain-count" class="brain-count" title="脳内の構造化レッスン数">🧠 <b>0</b></span>
+    </nav>
+  </header>
+
+  <main id="layout">
+    <section id="viewer-pane">
+      <div id="viewer"></div>
+
+      <div id="controls">
+        <div class="control">
+          <label>板厚 <b id="thickness-value">10</b> mm</label>
+          <input type="range" id="thickness" min="6" max="14" step="1" value="10" />
+        </div>
+        <div class="control">
+          <label>R部(フィレット)</label>
+          <div class="seg">
+            <button id="fillet-r5" class="seg-btn active">R5</button>
+            <button id="fillet-r3" class="seg-btn">R3</button>
+          </div>
+        </div>
+        <div class="control hint">
+          <span id="edit-context">△2 編集中: 新規バッテリブラケットとの干渉回避を検討</span>
+        </div>
+      </div>
+
+      <!-- 先輩カード -->
+      <aside id="senpai-card" class="hidden">
+        <div class="senpai-head">
+          <span class="senpai-avatar">🧑‍🏭</span>
+          <span class="senpai-title" id="senpai-title"></span>
+          <button id="senpai-close" class="ghost">×</button>
+        </div>
+        <p id="senpai-text"></p>
+        <div id="senpai-evidence" class="evidence"></div>
+        <div class="senpai-actions">
+          <button id="senpai-action" class="primary hidden"></button>
+          <button id="senpai-ask" class="ghost hidden"></button>
+        </div>
+      </aside>
+
+      <!-- フライホイール確認 -->
+      <div id="flywheel" class="hidden">
+        <p id="flywheel-question">…</p>
+        <div class="senpai-actions">
+          <button id="flywheel-yes" class="primary">はい、そうです</button>
+          <button id="flywheel-no" class="ghost">いいえ</button>
+        </div>
+      </div>
+
+      <div id="toast" class="hidden"></div>
+    </section>
+
+    <section id="graph-pane">
+      <div class="pane-title">🗺 生きた地図 — この部品の知識</div>
+      <div id="graph"></div>
+      <div class="legend">
+        <span><i class="dot part"></i>部品</span>
+        <span><i class="dot gen"></i>世代</span>
+        <span><i class="dot rev"></i>△改訂</span>
+        <span><i class="dot doc"></i>文書</span>
+        <span><i class="dot person"></i>人</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- 知識コンパイラ(ライブ抽出シーン) -->
+  <div id="compiler-modal" class="modal hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <b>知識コンパイラ</b> — 散らばった文書を、実行可能な知識に
+        <button id="compiler-close" class="ghost">×</button>
+      </div>
+      <div class="compiler-cols">
+        <div class="col">
+          <div class="col-title">📄 トラブル報告書(そのまま貼り付け)</div>
+          <textarea id="compiler-input" spellcheck="false"></textarea>
+        </div>
+        <div class="col">
+          <div class="col-title">🧠 構造化レッスン(実行可能)</div>
+          <pre id="compiler-output"></pre>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="compiler-run" class="primary">▶ コンパイル</button>
+        <button id="compiler-add" class="primary hidden">🧠 脳に追加</button>
+        <span id="compiler-status"></span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
