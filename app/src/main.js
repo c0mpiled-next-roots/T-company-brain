@@ -2,6 +2,7 @@
 // デモの物語: 2025年モデルの設計者が2015年と同じ失敗をしかける瞬間、先輩AIが割り込む。
 import data from './data/lessons.json';
 import reportRaw from './data/trouble-report.md?raw';
+import { initLang, setLang, getLang, t } from './i18n.js';
 import { createViewer } from './viewer.js';
 import { createMatcher } from './matcher.js';
 import { createSenpaiCard } from './senpai.js';
@@ -9,13 +10,19 @@ import { createGraph } from './graph.js';
 import { createFlywheel } from './flywheel.js';
 import { createCompiler } from './extract.js';
 
+// ── 言語初期化(?lang=en / localStorage) ─────
+initLang();
+document.getElementById('lang-toggle').addEventListener('click', () => {
+  setLang(getLang() === 'ja' ? 'en' : 'ja');
+});
+
 // ── 脳内レッスン数の表示 ─────────────────────
 const brainCountEl = document.querySelector('#brain-count b');
 let brainCount = data.lessons.length;
 function bumpBrain() {
   brainCount += 1;
   brainCountEl.textContent = String(brainCount);
-  toast(`🧠 脳が育ちました — レッスン ${brainCount} 件目`);
+  toast(t('toast.grown', { n: brainCount }));
 }
 brainCountEl.textContent = String(brainCount);
 
@@ -93,10 +100,5 @@ r3.addEventListener('click', () => changeFillet(3));
 
 // ── デモシード(URLパラメータ) ────────────────
 // ?demo=1 : 2025年モデル △2 編集直前の状態(既定と同じだが明示)。
-// リハーサル・審査員操作の起点を決定的にする。
-const params = new URLSearchParams(location.search);
-if (params.get('demo')) {
-  // 状態は初期値(t=10, R5)のまま。編集コンテキスト表示のみ強調。
-  document.getElementById('edit-context').textContent =
-    '△2 編集中: 新規バッテリブラケットとの干渉回避を検討(R5→R3 を試そうとしている)';
-}
+// ?lang=en : 英語UIで起動(initLangが処理)。
+// 編集コンテキストの文言は data-i18n(ctl.context)が言語に応じて描画する。

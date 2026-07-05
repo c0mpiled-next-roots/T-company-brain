@@ -9,6 +9,9 @@ npm run dev        # http://localhost:5173/?demo=1 を開く
 ```
 
 - **本番URL**(Vercelデプロイ後): `https://<project>.vercel.app/?demo=1`
+- **英語デモ用**: `?demo=1&lang=en`(ヘッダー右上の EN/日本語 ボタンでもいつでも切替可。
+  先輩カード・グラフ・確認質問まで全て切り替わる。コンパイラに貼る報告書だけは日本語原文のまま =
+  「散らばった日本語の現場文書を構造化する」という製品価値の演出なので意図的)
 - **回線断フォールバック**: `npm run build && npm run preview` + スマホテザリング
 
 ## Claude API キー(ライブ演出用・任意)

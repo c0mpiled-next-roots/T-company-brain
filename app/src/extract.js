@@ -1,6 +1,7 @@
 // 知識コンパイラ(ライブ抽出シーン)。
 // 報告書テキスト → 構造化レッスンJSON。Claude API 経由。
 // キー無し/回線断ではタイプライター疑似アニメ(録画ではなくスクリプト演出)に自動フォールバック。
+import { t } from './i18n.js';
 
 const CANNED_LESSON = {
   category: '強度不足',
@@ -58,7 +59,7 @@ export function createCompiler({ graph, onLessonAdded, reportText }) {
   async function run() {
     runBtn.disabled = true;
     addBtn.classList.add('hidden');
-    status.textContent = 'コンパイル中… 文書を読んでいます';
+    status.textContent = t('comp.working');
     extracted = null;
 
     let lesson = null;
@@ -81,7 +82,7 @@ export function createCompiler({ graph, onLessonAdded, reportText }) {
 
     extracted = { id: 'L-EXT-1', generation: 'A', ...lesson };
     const pretty = JSON.stringify(lesson, null, 2);
-    status.textContent = live ? '✓ Claude が構造化しました' : '✓ 構造化しました';
+    status.textContent = live ? t('comp.done.live') : t('comp.done');
     typewrite(pretty, () => {
       addBtn.classList.remove('hidden');
       runBtn.disabled = false;
@@ -95,7 +96,7 @@ export function createCompiler({ graph, onLessonAdded, reportText }) {
     graph.addLessonNode(extracted, { linkTo: 'genA' });
     onLessonAdded(extracted);
     addBtn.classList.add('hidden');
-    status.textContent = '🧠 脳に追加されました — 次の設計から警告に使われます';
+    status.textContent = t('comp.added');
     setTimeout(close, 1600);
   });
 

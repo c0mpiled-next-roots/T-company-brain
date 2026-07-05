@@ -2,6 +2,7 @@
 // 設計判断(DESIGN-DOC): STL調達はしない。R表現はセグメント差し替えの擬似表現。
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { t as i18nT, onLangChange } from './i18n.js';
 
 const COLORS = {
   steel: 0x7d8da1,
@@ -115,7 +116,7 @@ export function createViewer(container) {
       addEdges(relief, COLORS.relief);
       part.add(relief);
 
-      const label = makeLabel('逃がし形状', '#3fb950');
+      const label = makeLabel(i18nT('viewer.relief'), '#3fb950');
       label.position.set(58, t + 44, 0);
       part.add(label);
     }
@@ -172,6 +173,7 @@ export function createViewer(container) {
   });
 
   rebuild();
+  onLangChange(() => rebuild()); // 逃がし形状ラベル等を言語に追従させる
 
   return {
     setThickness(v) { state.thickness = v; rebuild(); },

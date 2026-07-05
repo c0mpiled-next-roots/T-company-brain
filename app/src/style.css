@@ -64,6 +64,7 @@ body {
   border-top: 1px solid var(--border);
 }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+.legend em { font-style: normal; }
 .dot.part { background: #58a6ff; } .dot.gen { background: #8b98a9; }
 .dot.rev { background: #f0883e; } .dot.doc { background: #3fb950; }
 .dot.person { background: #d2a8ff; }

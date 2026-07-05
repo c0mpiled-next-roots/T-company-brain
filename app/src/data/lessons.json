@@ -174,7 +174,12 @@
       "evidence": ["L-2015-1", "L-2020-2"],
       "senpai_text": "ちょっと待ってください。この部位の板厚を10mm未満にするのは危険です。2014年にFEM解析で締結部の応力集中が検出され、山田さんが8→10mmに上げた経緯があります(2015年モデル △1)。さらに2019年、軽量化のために8mmへ戻して全く同じ強度不足が再発し、手戻りの末に軽量化を断念しています(2020年モデル △2、担当: 鈴木さん)。同じ失敗を3度目にしないでください。",
       "recommendation": "板厚は10mm以上を維持。軽量化が必要なら材質変更(L-GEN-3: アルミ化+板厚1.4倍)を検討",
-      "ask_person": "山田さん(2015 △1 担当)"
+      "ask_person": "山田さん(2015 △1 担当)",
+      "en": {
+        "title": "Recurrence risk: insufficient plate thickness",
+        "senpai_text": "Hold on. Dropping the plate thickness below 10 mm here is dangerous. In 2014, FEM analysis found stress concentration at the fastening area, and Yamada-san raised it from 8 to 10 mm (2015 model △1). Then in 2019 it was thinned back to 8 mm for weight reduction — the exact same failure recurred, and after the rework the weight target had to be abandoned (2020 model △2, by Suzuki-san). Don't let the same mistake happen a third time.",
+        "ask_person": "Yamada-san (owner of 2015 △1)"
+      }
     },
     {
       "id": "R2",
@@ -185,7 +190,13 @@
       "senpai_text": "そのRのダラし(R5→R3)、過去に問題を起こしています。2014年に隣接ブラケットとの干渉回避で同じ変更をした結果、剛性が低下して△3でリブ追加の手戻りが発生しました(2015年モデル △2→△3)。干渉回避が目的なら、ダラしではなく逃がし形状の追加を推奨します。2019年にワイヤハーネス干渉を同じ手法で解決した成功例があります(2020年モデル △3、担当: 佐藤さん)。",
       "recommendation": "R5は維持し、干渉部位に逃がし形状を追加する(2020 △3 の成功パターン)",
       "action": { "type": "relief", "label": "逃がし形状を適用" },
-      "ask_person": "佐藤さん(2015 △2 / 2020 △3 担当)"
+      "ask_person": "佐藤さん(2015 △2 / 2020 △3 担当)",
+      "en": {
+        "title": "Recurrence risk: stiffness loss from fillet reduction",
+        "senpai_text": "That fillet reduction (R5→R3) has caused trouble before. In 2014 the same change was made to clear an adjacent bracket — stiffness dropped, and △3 had to add a rib as rework (2015 model △2→△3). If you need clearance, add a relief shape instead of reducing the fillet. The same approach solved a wire-harness interference in 2019 (2020 model △3, by Sato-san).",
+        "action_label": "Apply relief shape",
+        "ask_person": "Sato-san (owner of 2015 △2 / 2020 △3)"
+      }
     }
   ]
 }

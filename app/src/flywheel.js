@@ -1,9 +1,7 @@
 // フライホイール — 書き込みパス。
 // 変更適用 → AIの確認質問(Claude API、失敗時は静的文言) → ワンタップ回答 →
 // 構造化レッスンが増える(グラフに新ノード)。「脳が今、育った」の瞬間。
-
-const FALLBACK_QUESTION =
-  'この変更(逃がし形状の追加)の理由は、新規バッテリブラケットとの干渉回避ですね？';
+import { getLang, t } from './i18n.js';
 
 export function createFlywheel({ graph, onLessonAdded }) {
   const panel = document.getElementById('flywheel');
@@ -15,13 +13,13 @@ export function createFlywheel({ graph, onLessonAdded }) {
 
   async function askAfterChange(changeDescription) {
     // 質問文の生成だけLLM(遅延・失敗時は即静的文言にフォールバック)
-    let question = FALLBACK_QUESTION;
+    let question = t('fly.fallback');
     try {
       const resp = await Promise.race([
         fetch('/api/claude', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ task: 'flywheel', text: changeDescription }),
+          body: JSON.stringify({ task: 'flywheel', text: changeDescription, lang: getLang() }),
         }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
         new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000)),
       ]);

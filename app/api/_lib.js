@@ -14,20 +14,22 @@ const PROMPTS = {
     maxTokens: 500,
   }),
   // フライホイール確認質問(一行)
-  flywheel: (ctx) => ({
+  flywheel: (ctx, lang) => ({
     system:
-      'あなたは設計者の後ろで見守る先輩AI。設計者が行った変更に対して、変更理由を一言で確認する質問を日本語で1文だけ出力する。丁寧だが簡潔に。質問文以外は出力しない。',
+      lang === 'en'
+        ? 'You are a senior engineer AI watching over a designer. For the change the designer just made, output exactly ONE short English question confirming the reason for the change. Polite but concise. Output nothing but the question.'
+        : 'あなたは設計者の後ろで見守る先輩AI。設計者が行った変更に対して、変更理由を一言で確認する質問を日本語で1文だけ出力する。丁寧だが簡潔に。質問文以外は出力しない。',
     user: `変更内容: ${ctx}`,
     maxTokens: 100,
   }),
 };
 
-export async function handleClaudeRequest({ task, text }) {
+export async function handleClaudeRequest({ task, text, lang }) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
   if (!PROMPTS[task]) throw new Error(`unknown task: ${task}`);
 
-  const { system, user, maxTokens } = PROMPTS[task](String(text || '').slice(0, 8000));
+  const { system, user, maxTokens } = PROMPTS[task](String(text || '').slice(0, 8000), lang);
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
