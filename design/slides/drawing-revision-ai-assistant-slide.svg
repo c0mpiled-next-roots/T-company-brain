@@ -1,0 +1,72 @@
+<svg width="1360" height="784" viewBox="0 0 680 392" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>図面の変更履歴を活かすCAD内AIアシスタントの説明スライド</title>
+<desc>3コマ構成。①図面に失敗の履歴（△）が残る、②世代が変わると同じ失敗が再発する、③AIが編集中に過去の△を警告して再発を防ぐ、という流れを示す。</desc>
+<style>
+  text{font-family:"Helvetica Neue","Hiragino Sans","Yu Gothic",sans-serif;}
+  .th{font-size:14px;font-weight:500;fill:#2C2C2A;}
+  .ts{font-size:12px;font-weight:400;fill:#5F5E5A;}
+  .box{fill:#FFFFFF;stroke:#B4B2A9;stroke-width:0.75;}
+  .h-gray{fill:#D3D1C7;} .t-gray{fill:#2C2C2A;}
+  .h-red{fill:#F7C1C1;} .t-red{fill:#791F1F;}
+  .h-teal{fill:#9FE1CB;} .t-teal{fill:#04342C;}
+  .bubble{fill:#E1F5EE;stroke:#5DCAA5;stroke-width:0.75;}
+  .tb1{fill:#04342C;} .tb2{fill:#0F6E56;}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<rect x="0" y="0" width="680" height="392" fill="#FDFCF9"/>
+
+<text x="340" y="34" class="th" style="font-size:19px" text-anchor="middle">図面の変更履歴（△）を活かすCAD内AIアシスタント</text>
+<text x="340" y="55" class="ts" text-anchor="middle">ベテランの勘を、組織の仕組みへ</text>
+
+<rect class="box" x="20" y="74" width="190" height="244" rx="8"/>
+<rect class="h-gray" x="20" y="74" width="190" height="34" rx="8"/>
+<text x="115" y="96" class="th t-gray" text-anchor="middle">① 失敗の履歴が残る</text>
+<text x="115" y="130" class="ts" text-anchor="middle">変更のたびに△が増える</text>
+<rect class="box" x="70" y="146" width="90" height="110" rx="4"/>
+<line x1="82" y1="170" x2="148" y2="170" stroke="#B4B2A9" stroke-width="0.5"/>
+<line x1="82" y1="184" x2="148" y2="184" stroke="#B4B2A9" stroke-width="0.5"/>
+<polygon points="98,185 84,208 112,208" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+<text x="98" y="205" text-anchor="middle" style="font-size:11px;fill:#501313">1</text>
+<polygon points="124,207 110,230 138,230" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+<text x="124" y="227" text-anchor="middle" style="font-size:11px;fill:#501313">2</text>
+<polygon points="146,183 132,206 160,206" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+<text x="146" y="203" text-anchor="middle" style="font-size:11px;fill:#501313">3</text>
+<text x="115" y="288" class="ts" text-anchor="middle">△＝設計変更の記録</text>
+
+<path d="M215 192 L240 192" fill="none" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect class="box" x="245" y="74" width="190" height="244" rx="8"/>
+<rect class="h-red" x="245" y="74" width="190" height="34" rx="8"/>
+<text x="340" y="96" class="th t-red" text-anchor="middle">② 同じ失敗が再発</text>
+<text x="340" y="130" class="ts" text-anchor="middle">世代が変わっても繰り返す</text>
+<rect class="box" x="262" y="152" width="60" height="82" rx="4"/>
+<text x="292" y="170" class="ts" text-anchor="middle">2015年</text>
+<polygon points="292,182 280,203 304,203" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+<text x="292" y="200" text-anchor="middle" style="font-size:11px;fill:#501313">!</text>
+<rect class="box" x="358" y="152" width="60" height="82" rx="4"/>
+<text x="388" y="170" class="ts" text-anchor="middle">2020年</text>
+<polygon points="388,182 376,203 400,203" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+<text x="388" y="200" text-anchor="middle" style="font-size:11px;fill:#501313">!</text>
+<text x="340" y="150" class="ts" text-anchor="middle" style="fill:#A32D2D">再発</text>
+<path d="M324 216 L356 216" fill="none" stroke="#A32D2D" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="340" y="288" class="ts" text-anchor="middle">知見が引き継がれない</text>
+
+<path d="M440 192 L465 192" fill="none" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect class="box" x="470" y="74" width="190" height="244" rx="8"/>
+<rect class="h-teal" x="470" y="74" width="190" height="34" rx="8"/>
+<text x="565" y="96" class="th t-teal" text-anchor="middle">③ AIが再発を防ぐ</text>
+<text x="565" y="130" class="ts" text-anchor="middle">編集中にAIが警告する</text>
+<rect class="box" x="485" y="150" width="66" height="95" rx="4"/>
+<line x1="495" y1="172" x2="541" y2="172" stroke="#B4B2A9" stroke-width="0.5"/>
+<polygon points="515,182 503,203 527,203" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+<text x="515" y="200" text-anchor="middle" style="font-size:11px;fill:#501313">!</text>
+<rect class="bubble" x="558" y="158" width="96" height="58" rx="10"/>
+<text x="606" y="182" class="th tb1" text-anchor="middle">過去に失敗あり</text>
+<text x="606" y="202" class="ts tb2" text-anchor="middle">担当者に確認を</text>
+<text x="565" y="288" class="ts" text-anchor="middle">再発をその場で止める</text>
+
+<rect x="20" y="334" width="640" height="38" rx="8" fill="#EEEDFE" stroke="#AFA9EC" stroke-width="0.75"/>
+<text x="340" y="358" class="th" text-anchor="middle" style="fill:#26215C">過去の失敗を「編集の瞬間」に思い出す仕組み</text>
+</svg>
