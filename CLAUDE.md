@@ -38,6 +38,19 @@ Machine note (IPv4-only networks): Supabase direct-connection hosts
 gbrain processes (shell profile + MCP registration env), otherwise
 migrate/schema operations fail with `getaddrinfo ENOTFOUND`.
 
+**Version pin (important for all members): the shared brain is at schema
+v119 → your gbrain CLI must be ≤ v0.42.54** (e.g. `git -C ~/gbrain checkout
+814258dd` = v0.42.53.0). Newer CLIs (v0.42.55+) auto-run migration 120+ on
+init, which fails over the Session Pooler on IPv4-only networks
+(wedged-pooler partial-commit; direct connection is IPv6-only). Do NOT
+migrate the shared brain solo — when we upgrade, the brain owner migrates
+on an IPv6 network and everyone checks out the matching version together.
+
+Embedding: the brain uses `zeroentropyai:zembed-1` (1280d). Each member
+needs `ZEROENTROPY_API_KEY` in their shell profile (get it from the brain
+owner via password manager). Without it, reads/keyword search work but
+semantic search and import/embed don't.
+
 ## GBrain Search Guidance (configured by /sync-gbrain)
 <!-- gstack-gbrain-search-guidance:start -->
 
