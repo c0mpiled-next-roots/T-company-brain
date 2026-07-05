@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Revision-History Brain — Pitch</title>
+<style>
+  :root {
+    --paper: #fbfbf6;
+    --ink: #1c1c1c;
+    --line: #2f2f2f;
+    --thin: #8a8a8a;
+    --dim: #3a5f8a;
+    --red: #c0392b;
+    --muted: #6d6d6d;
+    --mono: "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #202020; overflow: hidden; }
+  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; color: var(--ink); }
+
+  #stage { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; transform-origin: center; }
+
+  .slide {
+    position: absolute; inset: 0; width: 1280px; height: 720px;
+    background: var(--paper); display: none; overflow: hidden;
+  }
+  .slide.active { display: block; }
+
+  /* ── Drawing frame: outer + inner border, zone marks ─────────────── */
+  .slide::before { content: ""; position: absolute; inset: 12px; border: 1.5px solid var(--line); pointer-events: none; }
+  .slide::after  { content: ""; position: absolute; inset: 30px; border: 2.5px solid var(--line); pointer-events: none; }
+  .zones { position: absolute; inset: 12px; pointer-events: none; font-family: var(--mono); font-size: 11px; color: var(--ink); }
+  .zones span { position: absolute; }
+  .zt { top: 1px; }  .zb { bottom: 1px; }
+  .zl { left: 4px; } .zr { right: 4px; }
+  .tickt { position: absolute; top: 0; width: 1px; height: 18px; background: var(--line); }
+  .tickb { position: absolute; bottom: 0; width: 1px; height: 18px; background: var(--line); }
+  .tickl { position: absolute; left: 0; height: 1px; width: 18px; background: var(--line); }
+  .tickr { position: absolute; right: 0; height: 1px; width: 18px; background: var(--line); }
+
+  /* ── Title block (every sheet) ───────────────────────────────────── */
+  .tblock {
+    position: absolute; right: 32.5px; bottom: 32.5px; width: 430px;
+    border: 2px solid var(--line); border-right: none; border-bottom: none;
+    background: var(--paper); font-size: 11px; z-index: 5;
+    display: grid; grid-template-columns: 120px 1fr 90px 70px;
+    grid-template-rows: 26px 30px 24px;
+  }
+  .tblock div { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 2px 6px; overflow: hidden; }
+  .tblock div:nth-child(4n) { border-right: none; }
+  .tblock .lbl { display: block; font-size: 8px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.08em; }
+  .tblock .big { font-size: 13px; font-weight: 700; }
+  .tblock .mono { font-family: var(--mono); }
+
+  /* ── Content area ────────────────────────────────────────────────── */
+  .content { position: absolute; inset: 33px; padding: 30px 38px; }
+
+  /* Dimension-styled heading: label above a dimension line with arrows */
+  .dimh { margin-bottom: 26px; }
+  .dimh h2 { font-size: 30px; font-weight: 800; letter-spacing: 0.01em; }
+  .dimh h2 .jp { color: var(--muted); font-size: 16px; font-weight: 600; margin-left: 12px; }
+  .dimline { position: relative; height: 1.5px; background: var(--dim); margin-top: 10px; }
+  .dimline::before, .dimline::after {
+    content: ""; position: absolute; top: -4.25px; border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+  }
+  .dimline::before { left: 0; border-right: 12px solid var(--dim); }
+  .dimline::after { right: 0; border-left: 12px solid var(--dim); }
+  .dimline .ext { position: absolute; top: -8px; width: 1px; height: 18px; background: var(--dim); }
+  .dimline .ext.l { left: 0; } .dimline .ext.r { right: 0; }
+
+  .lead { font-size: 19px; line-height: 1.55; max-width: 900px; }
+  .lead b, .em { color: var(--red); }
+  .note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .mono { font-family: var(--mono); }
+
+  /* Cover */
+  .cover-center { position: absolute; left: 80px; right: 80px; top: 150px; }
+  .cover-code { font-family: var(--mono); font-size: 14px; color: var(--dim); letter-spacing: 0.25em; margin-bottom: 18px; }
+  .cover-title { font-size: 46px; font-weight: 800; line-height: 1.25; }
+  .cover-title .r { color: var(--red); }
+  .cover-sub { margin-top: 22px; font-size: 20px; color: var(--ink); }
+  .cover-sub .jp { display: block; margin-top: 8px; font-size: 15px; color: var(--muted); }
+  .stamp {
+    position: absolute; right: 90px; top: 120px; width: 130px; height: 130px; border: 3px double var(--red);
+    border-radius: 50%; color: var(--red); display: flex; align-items: center; justify-content: center;
+    text-align: center; font-weight: 800; font-size: 15px; transform: rotate(12deg); line-height: 1.3; opacity: 0.9;
+  }
+
+  /* Cycle diagram (problem) */
+  .cycle { display: flex; align-items: stretch; gap: 0; margin: 26px 0 18px; }
+  .cbox { border: 2px solid var(--line); background: #fff; padding: 12px 14px; width: 218px; }
+  .cbox h4 { font-size: 15px; margin-bottom: 4px; }
+  .cbox p { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .carrow { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 74px; }
+  .carrow .shaft { position: relative; width: 100%; height: 1.5px; background: var(--dim); }
+  .carrow .shaft::after { content: ""; position: absolute; right: 0; top: -4.25px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 11px solid var(--dim); }
+  .carrow .cap { font-size: 10.5px; color: var(--dim); font-family: var(--mono); margin-bottom: 5px; text-align: center; }
+  .quote { border-left: 4px solid var(--red); padding: 10px 16px; font-size: 18px; margin-top: 22px; background: #fff; max-width: 860px; }
+  .quote .who { display: block; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+  /* Revision table (insight + roadmap) */
+  table.rev { border-collapse: collapse; background: #fff; font-size: 14px; margin-top: 18px; }
+  table.rev th, table.rev td { border: 1px solid var(--line); padding: 7px 12px; text-align: left; }
+  table.rev th { font-size: 11px; font-family: var(--mono); letter-spacing: 0.1em; background: var(--paper); }
+  table.rev .mark { font-family: var(--mono); font-weight: 700; }
+  table.rev td.why { color: var(--red); font-weight: 600; }
+  table.rev tr.now td { background: #fdf0ee; }
+  .maparrow { font-family: var(--mono); color: var(--dim); font-size: 14px; margin: 4px 0; }
+
+  /* Screenshot figures + balloons */
+  .shot { position: relative; border: 2px solid var(--line); background: #fff; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .balloon {
+    position: absolute; width: 30px; height: 30px; border: 2px solid var(--red); border-radius: 50%;
+    background: #fff; color: var(--red); font-weight: 800; font-size: 15px; font-family: var(--mono);
+    display: flex; align-items: center; justify-content: center; z-index: 3;
+  }
+  .balloon::after { content: ""; position: absolute; width: 26px; height: 2px; background: var(--red); left: 26px; top: 12px; transform-origin: left center; }
+  .balloon.bl::after { transform: rotate(160deg); }
+  .balloon.br::after { transform: rotate(20deg); }
+  .legend { font-size: 14.5px; line-height: 1.5; }
+  .legend li { list-style: none; margin-bottom: 13px; display: flex; gap: 10px; }
+  .legend .n { flex: none; width: 26px; height: 26px; border: 2px solid var(--red); border-radius: 50%; color: var(--red); font-family: var(--mono); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+
+  /* Filmstrip */
+  .strip { display: flex; align-items: center; gap: 0; margin-top: 8px; }
+  .frame3 { width: 340px; }
+  .frame3 .shot { border-width: 2px; }
+  .frame3 .cap { margin-top: 8px; font-size: 13.5px; line-height: 1.45; }
+  .frame3 .cap b { font-family: var(--mono); color: var(--dim); }
+
+  /* Pipeline */
+  .pipe { display: flex; align-items: center; margin: 30px 0 22px; }
+  .pbox { border: 2px solid var(--line); background: #fff; padding: 14px 16px; width: 235px; }
+  .pbox h4 { font-size: 15px; }
+  .pbox p { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  .pbox.hot { border-color: var(--red); }
+  .pbox.hot h4 { color: var(--red); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+
+  /* vs table */
+  table.vs { border-collapse: collapse; background: #fff; font-size: 14px; margin-top: 20px; width: 100%; }
+  table.vs th, table.vs td { border: 1px solid var(--line); padding: 9px 12px; text-align: left; }
+  table.vs th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
+  table.vs td.us { font-weight: 700; }
+  table.vs td.us .em { color: var(--red); }
+
+  .hatch { background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgba(58,95,138,0.16) 5px 6px); }
+
+  .foot-hint { position: fixed; left: 16px; bottom: 10px; color: #888; font-size: 11px; font-family: var(--mono); z-index: 50; }
+
+  @media print {
+    html, body { background: #fff; overflow: visible; }
+    #stage { position: static; transform: none !important; width: auto; height: auto; }
+    .slide { display: block; position: relative; page-break-after: always; margin: 0 auto; }
+    .foot-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="foot-hint">←/→ navigate · P print · <a href="index-ja.html" style="color:#aaa">日本語</a></div>
+
+<template id="slides">
+
+<!-- ═══ 1. COVER ═══ -->
+<section class="slide" data-title="Revision-History Brain" data-code="RHB-000" data-rev="△0">
+  <div class="content">
+    <div class="cover-center">
+      <div class="cover-code">DWG NO. RHB-2026 &nbsp;·&nbsp; ORGANIZATIONAL MEMORY, INSIDE THE CAD</div>
+      <div class="cover-title">
+        Your drawings already know<br/>
+        <span class="r">why every change was made.</span><br/>
+        Nobody reads them. <span class="r">We make them speak.</span>
+      </div>
+      <div class="cover-sub">
+        Revision-History Brain — past failure knowledge reaches the designer <b>while they draw</b>. No search box.
+        <span class="jp">図面の改訂欄は数十年分のコミットログ。我々はその最初の読者です。</span>
+      </div>
+    </div>
+    <div class="stamp">DEMO<br/>IS LIVE</div>
+  </div>
+</section>
+
+<!-- ═══ 2. PROBLEM ═══ -->
+<section class="slide" data-title="Problem — the 5-10 year loop" data-code="RHB-001" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>Manufacturing re-solves the same failure every 5–10 years <span class="jp">— 組織的な再発ループ</span></h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="cycle">
+      <div class="cbox"><h4>Failure occurs</h4><p>Vibration crack, bend deformation… fixed properly, recorded in the drawing's revision block.</p></div>
+      <div class="carrow"><span class="cap">years pass</span><span class="shaft"></span></div>
+      <div class="cbox"><h4>A veteran remembers</h4><p>The documents exist — but the <b>index lives in the veteran's head</b>. New designers ask around.</p></div>
+      <div class="carrow"><span class="cap">rotation / retirement</span><span class="shaft"></span></div>
+      <div class="cbox"><h4>The index is lost</h4><p>Knowledge is still on paper. Nobody can reach it. Everyone believes this is normal.</p></div>
+      <div class="carrow"><span class="cap">new similar design</span><span class="shaft"></span></div>
+      <div class="cbox" style="border-color:var(--red)"><h4 style="color:var(--red)">Same failure again</h4><p>Same investigation, same countermeasure, same revision — 5–10 years after the last one.</p></div>
+    </div>
+    <div class="quote">
+      “I know I've seen this trouble before… <b>but which project was it?</b>”
+      <span class="who">— every senior design manager, before giving up and re-solving it</span>
+    </div>
+    <p class="note" style="margin-top:14px">Not a record-keeping problem. Everything was written down. It's a <b>reachability</b> problem.</p>
+  </div>
+</section>
+
+<!-- ═══ 3. INSIGHT ═══ -->
+<section class="slide" data-title="Insight — drawings already have Git" data-code="RHB-002" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>Drawings already have Git. <span class="jp">改訂欄 — 50年分のコミットログ</span></h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="cols">
+      <div>
+        <p class="lead">Every manufacturing drawing carries a <b>revision block</b>: each change <em>and the reason it was made</em>, mandated practice for decades.</p>
+        <div style="margin-top:22px">
+          <div class="maparrow">△ revision mark&nbsp;&nbsp;⟶&nbsp;&nbsp;commit</div>
+          <div class="maparrow">変更理由 (reason)&nbsp;&nbsp;⟶&nbsp;&nbsp;commit message</div>
+          <div class="maparrow">流用設計 (design reuse)&nbsp;&nbsp;⟶&nbsp;&nbsp;fork</div>
+          <div class="maparrow" style="color:var(--red); font-weight:700">tooling (blame / lint / CI)&nbsp;&nbsp;⟶&nbsp;&nbsp;none. ever.</div>
+        </div>
+        <p class="note" style="margin-top:20px">The corpus already exists — zero cold start, zero behavior change.<br/>We are building the first reader.</p>
+      </div>
+      <div>
+        <table class="rev">
+          <tr><th>記号</th><th>DATE</th><th>CHANGE</th><th>REASON — the buried gold</th></tr>
+          <tr><td class="mark">△3</td><td class="mono">2021-03</td><td>曲げ線際の穴を移動</td><td class="why">曲げ加工時の変形対策</td></tr>
+          <tr><td class="mark">△2</td><td class="mono">2019-07</td><td>穴位置変更</td><td class="why">エッジ距離不足による振動試験クラック対策</td></tr>
+          <tr><td class="mark">△1</td><td class="mono">2018-04</td><td>穴径φ6→φ8</td><td class="why">組付誤差の吸収</td></tr>
+        </table>
+        <p class="note" style="margin-top:10px">An actual revision block from our demo corpus — parsed by the product, not typed by hand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. PRODUCT ═══ -->
+<section class="slide" data-title="Product — memory that interrupts drawing" data-code="RHB-003" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>git blame × an always-on reviewer, inside the CAD</h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="cols" style="grid-template-columns: 1.6fr 1fr">
+      <div class="shot">
+        <img src="img/pitch-warning.png" alt="warning moment" />
+        <div class="balloon bl" style="right:2%; top:30%;">1</div>
+        <div class="balloon bl" style="right:2%; top:46%;">2</div>
+        <div class="balloon br" style="left:24%; top:56%;">3</div>
+      </div>
+      <ul class="legend">
+        <li><span class="n">1</span><span><b>The drawing is the query.</b> The part number is read from the title block — the designer typed nothing, searched nothing.</span></li>
+        <li><span class="n">2</span><span><b>2019's failure interrupts today's mistake.</b> A hole drawn too close to the bend line surfaces the revision that fixed this exact pattern — <span class="em">while drawing, not at review</span>.</span></li>
+        <li><span class="n">3</span><span><b>Deterministic checks, derived provenance.</b> Live geometry rules link back to the real revision row they came from.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. DEMO BEATS ═══ -->
+<section class="slide" data-title="The magic moment — 3 beats" data-code="RHB-004" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>Open. Draw. Get interrupted by 2019.</h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="strip">
+      <div class="frame3">
+        <div class="shot"><img src="img/pitch-clean.png" alt="open drawing"/></div>
+        <p class="cap"><b>01 OPEN</b> — a new drawing on the standard sheet. Family knowledge loads from the title block. Zero clicks.</p>
+      </div>
+      <div class="carrow"><span class="cap">draw one hole</span><span class="shaft"></span></div>
+      <div class="frame3">
+        <div class="shot"><img src="img/pitch-warning.png" alt="warning"/></div>
+        <p class="cap"><b>02 WARNED</b> — the hole lands 2mm from the bend line. The dock interrupts: <span style="color:var(--red)">bend deformation risk — fixed before in △3 (2021)</span>.</p>
+      </div>
+      <div class="carrow"><span class="cap">click the warning</span><span class="shaft"></span></div>
+      <div class="frame3">
+        <div class="shot"><img src="img/pitch-lightbox.png" alt="past drawing"/></div>
+        <p class="cap"><b>03 LEARN</b> — the source drawing opens side-by-side, revision row highlighted. Move the hole; the warning clears.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">Everything above is the working product — same build as this demo, 184 tests, no mockups.</p>
+  </div>
+</section>
+
+<!-- ═══ 6. HOW IT WORKS ═══ -->
+<section class="slide" data-title="How it works" data-code="RHB-005" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>DXF in. Knowledge out. No PLM required. <span class="jp">図面ファイルだけで動く</span></h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="pipe">
+      <div class="pbox"><h4>Drawing archive</h4><p>Decades of DXF/DWG sheets — the ones already sitting on your file server. Title blocks, revision rows, dimensions.</p></div>
+      <div class="carrow"><span class="cap">parse revision blocks</span><span class="shaft"></span></div>
+      <div class="pbox hot"><h4>Knowledge derivation</h4><p>Revision rows → structured failure knowledge, linked to part families and geometry patterns. AI reads the terse human reasons.</p></div>
+      <div class="carrow"><span class="cap">rules + retrieval</span><span class="shaft"></span></div>
+      <div class="pbox"><h4>Inside the CAD</h4><p>Deterministic checks fire live while drawing; provenance cards open the original sheet, revision highlighted.</p></div>
+    </div>
+    <div class="cols">
+      <p class="lead" style="font-size:17px">The demo pipeline is <b>real</b>: every card you saw was derived from the drawings' own revision blocks by the parser — not hand-written.</p>
+      <p class="lead" style="font-size:17px"><b>Local-first by construction.</b> The brain runs inside the customer's walls. Nothing leaves.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7. WHY NOW ═══ -->
+<section class="slide" data-title="Why now" data-code="RHB-006" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>The commit log waited 50 years for a reader</h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="cycle" style="margin-top:40px">
+      <div class="cbox" style="width:300px"><h4>1970s →</h4><p>Revision blocks become mandated practice. Terse, jargon-heavy, human — <b>unreadable by software</b> for half a century.</p></div>
+      <div class="carrow"><span class="shaft"></span></div>
+      <div class="cbox" style="width:300px"><h4>2023 →</h4><p>LLMs finally read change intent: 「エッジ距離不足による振動試験クラック対策」 parses into cause, pattern, countermeasure.</p></div>
+      <div class="carrow"><span class="shaft"></span></div>
+      <div class="cbox" style="width:300px; border-color:var(--red)"><h4 style="color:var(--red)">Now</h4><p>Local AI is deployable on-prem — the only architecture drawing data will ever be allowed to touch.</p></div>
+    </div>
+    <p class="lead" style="margin-top:36px">The knowledge was always there. The reader only just became possible — and it can finally live <b>where the drawings live</b>.</p>
+  </div>
+</section>
+
+<!-- ═══ 8. MOAT ═══ -->
+<section class="slide" data-title="Moat — data never leaves" data-code="RHB-007" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>The data never leaves the customer. <span class="jp">それがモートの形</span></h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <p class="lead">Drawing archives are the crown jewels of a manufacturer — the most valuable corpora are the most confidential. So we don't ask for them: <b>the brain ships to the archive, eats it in place, and we hold nothing.</b></p>
+    <table class="vs">
+      <tr><th></th><th>AI-on-PLM layers (Leo AI, CoLab…)</th><th>Revision-History Brain</th></tr>
+      <tr><td>Input</td><td>PLM/PDM metadata, review comments</td><td class="us">The drawing sheet itself — <span class="em">DXF/DWG in, knowledge out</span></td></tr>
+      <tr><td>Requires</td><td>Teamcenter / Windchill / Vault integration</td><td class="us">A folder of files. No PLM, no migration</td></tr>
+      <tr><td>Deployment</td><td>Cloud</td><td class="us">Inside customer walls (on-prem / local)</td></tr>
+      <tr><td>Reaches</td><td>Enterprises already on modern PLM</td><td class="us">Everyone with an archive — including the decades that predate PLM</td></tr>
+    </table>
+    <p class="note" style="margin-top:14px">Lock-in comes from the accumulated, customer-owned brain — not from holding their data hostage.</p>
+  </div>
+</section>
+
+<!-- ═══ 9. ROADMAP ═══ -->
+<section class="slide" data-title="Roadmap — written as a revision block" data-code="RHB-008" data-rev="△4">
+  <div class="content">
+    <div class="dimh">
+      <h2>Roadmap <span class="jp">— 当社の改訂欄</span></h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <table class="rev" style="width:100%; font-size:16px">
+      <tr><th>記号</th><th>STAGE</th><th>CHANGE</th><th>REASON</th></tr>
+      <tr class="now"><td class="mark">△1</td><td class="mono">NOW — live demo</td><td><b>Retrieval in the CAD</b> (blame)</td><td>The index problem is the bleeding wound; archives already exist</td></tr>
+      <tr><td class="mark">△2</td><td class="mono">NEXT</td><td><b>Save-time gate</b> (CI for drawings)</td><td>Turn one designer's near-miss into the organization's checkpoint</td></tr>
+      <tr><td class="mark">△3</td><td class="mono">THEN</td><td><b>Capture flywheel</b></td><td>Knowledge that gets used motivates better revision records — the log improves itself</td></tr>
+      <tr><td class="mark">△4</td><td class="mono">SCALE</td><td><b>3D / STEP, enterprise archives</b></td><td>Same thesis, bigger sheets: the 2D demo vehicle proved the loop</td></tr>
+    </table>
+    <p class="note" style="margin-top:16px">Each stage is the same product growing more useful on the same corpus — no pivot required between rows.</p>
+  </div>
+</section>
+
+<!-- ═══ 10. FOUNDER / ASK ═══ -->
+<section class="slide" data-title="Founder" data-code="RHB-009" data-rev="△1">
+  <div class="content">
+    <div class="dimh">
+      <h2>Built by someone who lived the loop</h2>
+      <div class="dimline"><span class="ext l"></span><span class="ext r"></span></div>
+    </div>
+    <div class="cols">
+      <div>
+        <p class="lead">Working design engineer at one of the world's largest automakers. Years of “<b>if you knew, why didn't you tell me</b>” — watching solved problems come back, watching veterans leave with the index in their heads.</p>
+        <p class="lead" style="margin-top:18px">This demo was built <b>outside company walls, on synthetic data</b> — because the product's first principle is that your data is yours.</p>
+      </div>
+      <div>
+        <table class="rev" style="width:100%">
+          <tr><th colspan="2">STATUS OF WORK</th></tr>
+          <tr><td>Working product</td><td class="mono">demo you just saw — live rules, real pipeline, 184 tests</td></tr>
+          <tr><td>Corpus</td><td class="mono">synthetic, derived end-to-end from revision blocks</td></tr>
+          <tr><td>Next validation</td><td class="mono">external designers: “would you use it — what would you pay”</td></tr>
+        </table>
+        <div class="quote" style="margin-top:24px; font-size:16px">
+          Ask: introductions to manufacturing design teams drowning in their own archives.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</template>
+
+<script>
+(function () {
+  const stage = document.getElementById('stage');
+  const tpl = document.getElementById('slides');
+  stage.appendChild(tpl.content.cloneNode(true));
+  const slides = [...stage.querySelectorAll('.slide')];
+  const N = slides.length;
+
+  // Per-sheet chrome: zone marks + title block.
+  slides.forEach((s, i) => {
+    const zones = document.createElement('div');
+    zones.className = 'zones';
+    let zhtml = '';
+    for (let k = 0; k < 6; k++) {
+      const x = 8 + (k + 0.5) * (100 / 6);
+      zhtml += `<span class="zt" style="left:${x}%">${6 - k}</span><span class="zb" style="left:${x}%">${6 - k}</span>`;
+      if (k > 0) zhtml += `<div class="tickt" style="left:${8 + k * (100 / 6)}%"></div><div class="tickb" style="left:${8 + k * (100 / 6)}%"></div>`;
+    }
+    'DCBA'.split('').forEach((c, k) => {
+      const y = 4 + (k + 0.5) * (100 / 4);
+      zhtml += `<span class="zl" style="top:${y}%">${c}</span><span class="zr" style="top:${y}%">${c}</span>`;
+      if (k > 0) zhtml += `<div class="tickl" style="top:${4 + k * (100 / 4)}%"></div><div class="tickr" style="top:${4 + k * (100 / 4)}%"></div>`;
+    });
+    zones.innerHTML = zhtml;
+    s.appendChild(zones);
+
+    const t = document.createElement('div');
+    t.className = 'tblock';
+    t.innerHTML = `
+      <div style="grid-column:1/3"><span class="lbl">COMPANY</span><span class="big">NAKAGATER MFG.</span></div>
+      <div><span class="lbl">DWG NO.</span><span class="mono">${s.dataset.code}</span></div>
+      <div><span class="lbl">REV</span><span class="mono">${s.dataset.rev}</span></div>
+      <div style="grid-column:1/3"><span class="lbl">TITLE</span><span class="big">${s.dataset.title}</span></div>
+      <div><span class="lbl">SCALE</span><span class="mono">1:1</span></div>
+      <div><span class="lbl">SIZE</span><span class="mono">16:9</span></div>
+      <div><span class="lbl">DRAWN</span><span class="mono">2026-07</span></div>
+      <div><span class="lbl">PROJECT</span><span class="mono">Revision-History Brain</span></div>
+      <div style="grid-column:3/5"><span class="lbl">SHEET</span><span class="mono">${i + 1} / ${N}</span></div>`;
+    s.appendChild(t);
+  });
+
+  let cur = Math.min(Math.max((parseInt(location.hash.slice(1), 10) || 1) - 1, 0), N - 1);
+  function show(i) {
+    cur = Math.min(Math.max(i, 0), N - 1);
+    slides.forEach((s, k) => s.classList.toggle('active', k === cur));
+    location.hash = String(cur + 1);
+  }
+  function fit() {
+    const sc = Math.min(innerWidth / 1280, innerHeight / 720) * 0.98;
+    stage.style.transform = `translate(-50%, -50%) scale(${sc})`;
+  }
+  addEventListener('resize', fit);
+  addEventListener('hashchange', () => {
+    const n = (parseInt(location.hash.slice(1), 10) || 1) - 1;
+    if (n !== cur) show(n);
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(cur + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(cur - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(N - 1);
+    else if (e.key === 'p' || e.key === 'P') print();
+  });
+  stage.addEventListener('click', (e) => {
+    const r = stage.getBoundingClientRect();
+    show(e.clientX - r.left < r.width / 3 ? cur - 1 : cur + 1);
+  });
+  fit();
+  show(cur);
+})();
+</script>
+</body>
+</html>
