@@ -19,6 +19,51 @@ T-company-brain — ハッカソン用プロジェクト。
 - HTMLは静的ファイルとして、ブラウザで直接開いて確認できる形を保つ
 - 各ディレクトリの用途は各READMEを参照する
 
+## GBrain Configuration (configured by /setup-gbrain)
+- Mode: local-stdio
+- Engine: postgres (Supabase, shared team brain)
+- Database: Session pooler at aws-0-ap-northeast-1.pooler.supabase.com:5432 (project ref: whymjsmhntghdlkzjcrk)
+- Config file: ~/.gbrain/config.json (mode 0600 — holds the connection URL; never commit)
+- Setup date: 2026-07-05 (migrated from PGLite same day; 47 pages transferred)
+- MCP registered: yes (user scope, with GBRAIN_DISABLE_DIRECT_POOL=1)
+- Artifacts sync: full
+- Current repo policy: read-write
+
+Team onboarding: get the connection URL from the brain owner via a password
+manager (never plaintext chat), then run `/setup-gbrain` and pick "Supabase,
+I already have a connection string". Choose trust policy "shared".
+
+Machine note (IPv4-only networks): Supabase direct-connection hosts
+(db.*.supabase.co) are IPv6-only. Set `GBRAIN_DISABLE_DIRECT_POOL=1` for all
+gbrain processes (shell profile + MCP registration env), otherwise
+migrate/schema operations fail with `getaddrinfo ENOTFOUND`.
+
+## GBrain Search Guidance (configured by /sync-gbrain)
+<!-- gstack-gbrain-search-guidance:start -->
+
+GBrain is set up and synced on this machine. The agent should prefer gbrain
+over Grep when the question is semantic or when you don't know the exact
+identifier yet. Two indexed corpora available via the `gbrain` CLI:
+- This repo's code (registered as `gstack-code-t-company-brain` source).
+- `~/.gstack/` curated memory (registered as `gstack-artifacts-nakajimakazunor`
+  source via the existing federation pipeline).
+
+Prefer gbrain when:
+- "Where is X handled?" / semantic intent, no exact string yet:
+    `gbrain search "<terms>"` or `gbrain query "<question>"`
+- "Where is symbol Y defined?" / symbol-based code questions:
+    `gbrain code-def <symbol>` or `gbrain code-refs <symbol>`
+- "What calls Y?" / "What does Y depend on?":
+    `gbrain code-callers <symbol>` / `gbrain code-callees <symbol>`
+- "What did we decide last time?" / past plans, retros, learnings:
+    `gbrain search "<terms>" --source gstack-artifacts-nakajimakazunor`
+
+Grep is still right for known exact strings, regex, multiline patterns, and
+file globs. The brain auto-syncs incrementally on every gstack skill start.
+Run `/sync-gbrain` to force-refresh, `/sync-gbrain --full` for full reindex.
+
+<!-- gstack-gbrain-search-guidance:end -->
+
 ## Skill routing
 
 When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
