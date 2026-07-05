@@ -27,6 +27,45 @@ predicates, zero add-in required — for teams not yet on the add-in.
 
 ---
 
+## Architecture at a glance
+
+```mermaid
+flowchart TB
+    subgraph KP["KNOWLEDGE PLANE — async · LLM compiles"]
+        SRC["Scattered sources<br/>△ revision histories · trouble reports · PPT / Excel"]
+        DRAFT["Draft lesson<br/>(structured, predicate attached)"]
+        LESSON["Approved lesson — gbrain<br/>predicate AST · provenance · applicability · lifecycle"]
+        SRC -->|"LLM compiler"| DRAFT
+        DRAFT -->|"human approval gate<br/>(scoping + consolidation)"| LESSON
+    end
+
+    subgraph DP["DESIGN-TIME PLANE — seconds · agent via MCP"]
+        CAD["CAD add-in<br/>① deterministic feature extraction<br/>(feature tree / B-rep interrogation)"]
+        CTX["design-context<br/>features · measured params · clearances"]
+        CAND["candidate lessons"]
+        GATE{"③ verification gate<br/>tier = min(knowledge, fidelity, label)"}
+        HARD["🔴 HARD warning<br/>senpai interrupts, with provenance"]
+        SOFT["🟡 SOFT advisory<br/>non-blocking suggestion"]
+        CAD --> CTX
+        CTX -->|"② semantic retrieval (RAG)"| CAND
+        CAND --> GATE
+        GATE -->|"predicate passes · confirmed label<br/>· exact measurement"| HARD
+        GATE -->|"similarity only / approx measure<br/>/ LLM-assigned label"| SOFT
+    end
+
+    LESSON -.->|"compiled, versioned knowledge"| CAND
+    HARD -->|"designer applies the proven fix"| FLY["FLYWHEEL<br/>one-tap confirmation → new draft lesson"]
+    FLY -.->|"knowledge born structured"| DRAFT
+    HARD -->|"accepted / dismissed / overridden"| TEL["outcome telemetry<br/>high dismissal → review queue"]
+    TEL -.-> LESSON
+```
+
+No LLM sits on the path to a hard warning: the upper plane compiles (humans
+approve), the lower plane decides with predicates. The flywheel loops design
+activity back into the knowledge plane — that is what keeps the map alive.
+
+---
+
 ## 1. Design principle: LLMs compile, predicates decide
 
 The core failure mode of an interrupting assistant is a false positive: **a senpai
